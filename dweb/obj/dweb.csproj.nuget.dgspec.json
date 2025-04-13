@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/afonsorgcosta/RiderProjects/dweb/dweb/dweb.csproj": {}
+    "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj": {}
   },
   "projects": {
-    "/Users/afonsorgcosta/RiderProjects/dweb/dweb/dweb.csproj": {
+    "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/afonsorgcosta/RiderProjects/dweb/dweb/dweb.csproj",
+        "projectUniqueName": "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
         "projectName": "dweb",
-        "projectPath": "/Users/afonsorgcosta/RiderProjects/dweb/dweb/dweb.csproj",
-        "packagesPath": "/Users/afonsorgcosta/.nuget/packages/",
-        "outputPath": "/Users/afonsorgcosta/RiderProjects/dweb/dweb/obj/",
+        "projectPath": "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
+        "packagesPath": "C:\\Users\\afons\\.nuget\\packages\\",
+        "outputPath": "D:\\projs\\dweb-afonso-gabriel\\dweb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/afonsorgcosta/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\afons\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -62,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/Users/afonsorgcosta/.dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\afons\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
