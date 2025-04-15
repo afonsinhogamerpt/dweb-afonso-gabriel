@@ -11,4 +11,5 @@ public class Filme
     public string nome { get; set; }
     public ICollection<Utilizador_Filme> FKUtilizador_Filme { get; set; } 
     public ICollection<Filme_Actor> FKFilme_Actor { get; set; } 
+    public ICollection<Review> FKReview { get; set; }
 }
