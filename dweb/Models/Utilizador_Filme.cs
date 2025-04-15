@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +8,9 @@ using Microsoft.EntityFrameworkCore;
 public class Utilizador_Filme
 {
     [ForeignKey(nameof(utilizadorID))]
-    public int utilizadorID { get; set; }
-    public Utilizador Utilizador { get; set; }
+    public string utilizadorID { get; set; }
+    
+    public IdentityUser Utilizador { get; set; }
     
     [ForeignKey(nameof(filmeID))]
     public int filmeID { get; set; }
