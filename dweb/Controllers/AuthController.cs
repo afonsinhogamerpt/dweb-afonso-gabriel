@@ -14,4 +14,9 @@ public class AuthController : Controller
     {
         return View();
     }
+    
+    public IActionResult Registo()
+    {
+        return View();
+    }
 }
