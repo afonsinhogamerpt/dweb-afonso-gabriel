@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Registo";
+}
+
+<div class="flex flex-col justify-center items-center min-h-screen">
+    <h1 class="font-bold text-3xl text-black">Registo</h1>
+
+    <div class="flex flex-col items-center justify-center bg-gray-100 w-[30vw] text-white mt-16 p-4 rounded-lg">
+
+        <div class="flex flex-col max-w-md w-full max-h-[60vh] overflow-y-auto  p-8 bg-gray-500 rounded-lg shadow-lg">
+            <div class="flex flex-col mb-4">
+                <label class="mb-2 text-white font-bold text-lg">Nome</label>
+                <input type="text" class="p-2 rounded text-black font-bold" placeholder="Cristiano"/>
+            </div>
+
+            <div class="flex flex-col mb-4">
+                <label class="mb-2 text-white font-bold text-lg">Apelido</label>
+                <input type="text" class="p-2 rounded text-black font-bold" placeholder="Roni"/>
+            </div>
+
+            <div class="flex flex-col mb-4">
+                <label class="mb-2 text-white font-bold text-lg">Email</label>
+                <input type="text" class="p-2 rounded text-black font-bold" placeholder="cristianoroni@gmail.com"/>
+            </div>
+
+            <div class="flex flex-col mb-4">
+                <label class="mb-2 text-white font-bold text-lg">Password</label>
+                <input type="password" class="p-2 rounded text-black" placeholder="******"/>
+            </div>
+
+            <div class="flex flex-col mb-4">
+                <label class="mb-2 text-white font-bold text-lg">Confirmar Password</label>
+                <input type="password" class="p-2 rounded text-black" placeholder="******"/>
+            </div>
+        </div>
+
+        <div class="flex justify-center items-center m-4">
+            <button class="bg-blue-600 rounded shadow-lg text-lg font-bold px-6 py-2 hover:bg-blue-800">Registar</button>
+        </div>
+
+        <a class="text-black hover:cursor-pointer" asp-controller="Auth" asp-action="Login">Já tens conta? Clica aqui!</a>
+
+    </div>
+</div>
+
+
+
+
+
