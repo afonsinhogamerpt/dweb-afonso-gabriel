@@ -40,12 +40,13 @@ public class ActorController : Controller
     [HttpPost]
     public async Task<ActionResult<Actor>> PostActor(Actor actor)
     {
+        
         _context.Actor.Add(actor);
         await _context.SaveChangesAsync();
-
         return Ok(actor);
     }
 
+    
     [HttpPut("{id}")]
     public async Task<ActionResult<Actor>> PutActor(Actor actor)
     {
