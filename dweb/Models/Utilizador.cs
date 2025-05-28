@@ -4,5 +4,5 @@ namespace dweb.Models;
 
 public class Utilizador : IdentityUser
 {
-    public ICollection<Filme> Filmes { get; set; }
+    public ICollection<Filme> ?Filmes { get; set; }
 }
