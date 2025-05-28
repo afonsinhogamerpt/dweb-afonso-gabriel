@@ -26,7 +26,8 @@ public class DirectorController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDirectors(int id)
     {
-        var director =  _context.Director. 
+        var director =  _context.Director.
+            Where(d => d.directorID == id).
             FirstOrDefault();
 
         if (director is Director)
