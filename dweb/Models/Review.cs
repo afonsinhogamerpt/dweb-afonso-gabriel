@@ -10,4 +10,6 @@ public class Review
     public int reviewID { get; set; }
     [StringLength(1024)]
     public string conteudo { get; set; }
+    [Required]
+    public double rating { get; set; }
 }
