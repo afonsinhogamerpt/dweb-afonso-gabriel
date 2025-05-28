@@ -4885,31 +4885,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gabic\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\afons\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gabic\\School\\Labor\\DW\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
+      "projectUniqueName": "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
       "projectName": "dweb",
-      "projectPath": "C:\\Users\\gabic\\School\\Labor\\DW\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
-      "packagesPath": "C:\\Users\\gabic\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gabic\\School\\Labor\\DW\\dweb-afonso-gabriel\\dweb\\obj\\",
+      "projectPath": "D:\\projs\\dweb-afonso-gabriel\\dweb\\dweb.csproj",
+      "packagesPath": "C:\\Users\\afons\\.nuget\\packages\\",
+      "outputPath": "D:\\projs\\dweb-afonso-gabriel\\dweb\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\gabic\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\afons\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

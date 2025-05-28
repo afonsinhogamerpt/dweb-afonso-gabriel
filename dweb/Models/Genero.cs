@@ -9,5 +9,5 @@ public class Genero
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int generoID { get; set; }
     public string nome { get; set; }
-    public ICollection<Filme_Genero> FKFilme_Genero { get; set; }
+    public ICollection<Filme> Filme { get; set; } = new List<Filme>();
 }

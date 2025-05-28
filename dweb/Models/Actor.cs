@@ -12,5 +12,5 @@ public class Actor
     public string nome { get; set; }
     public int idade { get; set; }
     public string bio { get; set; }
-    public ICollection<Filme_Actor> FKFilme_Actor { get; set; }
+    public ICollection<Filme> Filme { get; set; } = new List<Filme>();
 }

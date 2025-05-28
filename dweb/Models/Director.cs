@@ -9,5 +9,5 @@ public class Director
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int directorID { get; set; }
     public string nome { get; set; }
-    public ICollection<Filme_Director> FKFilme_Director { get; set; }
+    public ICollection<Filme> Filme { get; set; } = new List<Filme>();
 }
