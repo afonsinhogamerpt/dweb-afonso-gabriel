@@ -9,8 +9,8 @@
 
     <div class="d-flex flex-column justify-content-center align-items-center bg-light w-50 mt-5 p-4 rounded shadow-sm">
 
-        <form id="registerForm" asp-route-returnUrl="@Model" method="post" class="w-100">
-            <h2 class="fs-5 fw-bold text-center text-dark mb-4">Create a new account</h2>
+        <form id="registerForm" asp-action="Registo" asp-controller="Auth" asp-route-returnUrl="@Model" method="post" class="w-100">
+            <h2 class="fs-5 fw-bold text-center text-dark mb-4">Cria uma nova conta</h2>
             <hr />
 
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>

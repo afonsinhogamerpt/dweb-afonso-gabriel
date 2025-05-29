@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
+
 public class AuthController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -35,7 +34,7 @@ public class AuthController : Controller
     }
 
     [HttpPost("registo")]
-    public async Task<IActionResult> Registo([FromBody] RegistoDTO registo)
+    public async Task<IActionResult> Registo(RegistoDTO registo)
     {
         
         if (!ModelState.IsValid)
@@ -59,7 +58,7 @@ public class AuthController : Controller
 
         if (result.Succeeded)
         {
-            return Ok(new { message = "Utilizador registado com sucesso" });
+            return Redirect("/Identity/Account/Login");
         }
 
         var errors = result.Errors.Select(e => e.Description);
@@ -68,7 +67,7 @@ public class AuthController : Controller
     
     
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDTO login)
+    public async Task<IActionResult> Login(LoginDTO login)
     {
         if (!ModelState.IsValid)
         {
@@ -85,7 +84,7 @@ public class AuthController : Controller
 
         if (result.Succeeded)
         {
-            return Redirect("/Home/Index");
+            return RedirectToAction("Index", "Home");
         }
         
         return BadRequest("Não foi possível efetuar o login");
