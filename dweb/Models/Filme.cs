@@ -19,5 +19,6 @@ public class Filme
     public ICollection<Review> ?FKReview { get; set; }
     public ICollection<Genero> Genero { get; set; } = new List<Genero>();
     public ICollection<Director> Director { get; set; } = new List<Director>();
+    public ICollection<Mensagem> ?Mensagem { get; set; } 
 
 }
