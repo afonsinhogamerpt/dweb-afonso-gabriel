@@ -63,10 +63,10 @@ public class UtilizadorController : Controller
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteUtilizador(Utilizador utilizador)
+    public async Task<IActionResult> DeleteUtilizador([FromBody] string id)
     {
         var u = _context.Utilizador. 
-            Where(u => u.Id.Equals(utilizador.Id)). 
+            Where(u => u.Id.Equals(id)). 
             FirstOrDefault();
 
         if (u == null)

@@ -66,9 +66,10 @@ public class DirectorController : Controller
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteDirector(Director director)
+    public async Task<IActionResult> DeleteDirector([FromBody] int id)
     {
-        var dir = _context.Director.Where(d => d.directorID == director.directorID). 
+        var dir = _context.Director. 
+            Where(d => d.directorID == id). 
             FirstOrDefault();
 
         if (dir == null)

@@ -65,10 +65,10 @@ public class GeneroController : Controller
     }
 
     [HttpDelete]
-    public async Task<ActionResult<Genero>> DeleteGenero(Genero genero)
+    public async Task<ActionResult<Genero>> DeleteGenero([FromBody] int id)
     {
         var g = _context.Genero. 
-            Where(g => g.generoID == genero.generoID). 
+            Where(g => g.generoID == id). 
             FirstOrDefault();
 
         if (g is not Genero)

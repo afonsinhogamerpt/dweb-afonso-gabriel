@@ -69,9 +69,9 @@ public class ActorController : Controller
     }
 
     [HttpDelete]
-    public async Task<ActionResult<Actor>> DeleteActor(Actor actor)
+    public async Task<ActionResult<Actor>> DeleteActor([FromBody] int id)
     {
-        var act = _context.Actor.Where(a => a.actorID == actor.actorID). 
+        var act = _context.Actor.Where(a => a.actorID == id). 
                 FirstOrDefault();
 
         if (act == null)
@@ -81,7 +81,6 @@ public class ActorController : Controller
         
         _context.Actor.Remove(act);
         await _context.SaveChangesAsync();
-        
         return Ok("Actor removido com sucesso!");
     }
 }

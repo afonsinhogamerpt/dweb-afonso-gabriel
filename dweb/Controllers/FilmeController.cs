@@ -64,10 +64,10 @@ public class FilmeController : Controller
     }
 
     [HttpDelete]
-    public async Task<ActionResult<Filme>> DeleteFilme(Filme filme)
+    public async Task<ActionResult<Filme>> DeleteFilme([FromBody] int id)
     {
         var f = _context.Filme. 
-            Where(f => f.filmeID == filme.filmeID). 
+            Where(f => f.filmeID == id). 
             FirstOrDefault();
 
         if (f == null)
