@@ -8,4 +8,6 @@ public class FilmeDTO
     public string imagem { get; set; }
     public int ano { get; set; }
     public List<ActorDTO> actores { get; set; }
+    public List<GeneroDTO> generos { get; set; }
+    public List<DirectorDTO> directores { get; set; }
 }
