@@ -78,9 +78,5 @@ public class UtilizadorController : Controller
         await _context.SaveChangesAsync();
         return Ok("Utilizador removido com sucesso!");
     }
-
-    public IActionResult Update()
-    {
-        return View();
-    }
+    
 }
