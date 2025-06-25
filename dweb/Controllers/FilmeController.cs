@@ -61,13 +61,47 @@ public class FilmeController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Filme>> GetFilme(int id)
+    public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilme(int id)
     {
-        var filme = _context.Filme. 
+        var filme = _context.Filme 
+            .Include(f => f.Genero)
+            .Include(f => f.Director)
+            .Include(f => f.Actor).
+            Select(f => new FilmeDTO
+            {
+                filmeID = f.filmeID,
+                nome = f.nome,
+                resumo = f.resumo,
+                imagem = f.imagem,
+                ano = f.ano,
+                generos = f.Genero.Select(g => new GeneroDTO
+                {
+                    generoID = g.generoID,
+                    nome = g.nome
+                }).ToList(),
+                
+                directores = f.Director.Select(g => new DirectorDTO
+                {
+                    directorID = g.directorID,
+                    nome = g.nome,
+                    idade = g.idade, 
+                    bio = g.bio,  
+                    imagem = g.imagem,
+                        
+                }).ToList(),
+                actores = f.Actor.Select(a => new ActorDTO
+                {
+                    actorID = a.actorID,
+                    nome = a.nome,
+                    idade = a.idade,
+                    bio = a.bio,
+                    imagem = a.imagem
+                }).ToList()
+            }).
             Where(f => f.filmeID == id). 
             FirstOrDefault();
 
-        if (filme is not Filme)
+        if (filme == null)
         {
             return NotFound();
         }
