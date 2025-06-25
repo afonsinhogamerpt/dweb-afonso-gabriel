@@ -78,4 +78,17 @@ public class FilmeController : Controller
         await _context.SaveChangesAsync();
         return Ok("Filme removido com sucesso!");
     }
+
+    // Action para exibir detalhes do filme
+    [HttpGet]
+    [Route("/Filme/FilmeDetails/{id}")]
+    public IActionResult FilmeDetails(int id)
+    {
+        var filme = _context.Filme.FirstOrDefault(f => f.filmeID == id);
+        if (filme == null)
+        {
+            return NotFound();
+        }
+        return View(filme);
+    }
 }
