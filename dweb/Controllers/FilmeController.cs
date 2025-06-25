@@ -1,6 +1,8 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
@@ -16,9 +18,28 @@ public class FilmeController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Filme>>> GetFilmes()
+    public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilmes()
     {
-        var filmes = _context.Filme.ToList();
+        var filmes = await _context.Filme
+            .Include(f => f.Actor)
+            .Select(f => new FilmeDTO
+            {
+                filmeID = f.filmeID,
+                nome = f.nome,
+                resumo = f.resumo,
+                imagem = f.imagem,
+                ano = f.ano,
+                actores = f.Actor.Select(a => new ActorDTO
+                {
+                    actorID = a.actorID,
+                    nome = a.nome,
+                    idade = a.idade,
+                    bio = a.bio,
+                    imagem = a.imagem
+                }).ToList()
+            })
+            .ToListAsync();
+
         return Ok(filmes);
     }
 
@@ -38,11 +59,39 @@ public class FilmeController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<Filme>> PostFilme(Filme filme)
+    public async Task<ActionResult<Filme>> PostFilme(CreateMovieDTO createMovieDTO)
     {
+
+        var generos = await _context.Genero.Where(g => createMovieDTO.generos.Contains(g.generoID)).ToListAsync();
+        var directores = await _context.Director.Where(d => createMovieDTO.directores.Contains(d.directorID)).ToListAsync();
+        var actores = await _context.Actor.Where(a => createMovieDTO.actores.Contains(a.actorID)).ToListAsync();
+        
+        var filme = new Filme
+        {
+            nome = createMovieDTO.nome,
+            resumo = createMovieDTO.resumo,
+            imagem = createMovieDTO.imagem,
+            ano = createMovieDTO.ano,
+            Genero = generos,
+            Director = directores,
+            Actor = actores,
+        };
+        
+        var response = new MovieDTO
+        {
+            nome = filme.nome,
+            resumo = filme.resumo,
+            ano = filme.ano,
+            imagem = filme.imagem,
+            Generos = generos.Select(g => g.generoID).ToList(),
+            Directores = directores.Select(d => d.directorID).ToList(),
+            Actores = actores.Select(a => a.actorID).ToList(),
+        };
+        
         _context.Filme.Add(filme);
         await _context.SaveChangesAsync();
-        return Ok(filme);
+        return Ok(response);
+        
     }
 
     [HttpPut]

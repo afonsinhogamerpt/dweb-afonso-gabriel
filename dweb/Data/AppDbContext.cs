@@ -18,4 +18,6 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Genero> Genero { get; set; }
     public DbSet<Review> Review { get; set; }
     
+    public DbSet<Mensagem> Mensagem { get; set; }
+    
 }
