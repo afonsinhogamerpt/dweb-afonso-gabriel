@@ -18,9 +18,28 @@ public class FilmeController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Filme>>> GetFilmes()
+    public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilmes()
     {
-        var filmes = _context.Filme.ToList();
+        var filmes = await _context.Filme
+            .Include(f => f.Actor)
+            .Select(f => new FilmeDTO
+            {
+                filmeID = f.filmeID,
+                nome = f.nome,
+                resumo = f.resumo,
+                imagem = f.imagem,
+                ano = f.ano,
+                actores = f.Actor.Select(a => new ActorDTO
+                {
+                    actorID = a.actorID,
+                    nome = a.nome,
+                    idade = a.idade,
+                    bio = a.bio,
+                    imagem = a.imagem
+                }).ToList()
+            })
+            .ToListAsync();
+
         return Ok(filmes);
     }
 
