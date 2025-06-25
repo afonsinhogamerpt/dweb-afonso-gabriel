@@ -21,6 +21,8 @@ public class FilmeController : Controller
     public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilmes()
     {
         var filmes = await _context.Filme
+            .Include(f => f.Genero)
+            .Include(f => f.Director)
             .Include(f => f.Actor)
             .Select(f => new FilmeDTO
             {
@@ -29,6 +31,21 @@ public class FilmeController : Controller
                 resumo = f.resumo,
                 imagem = f.imagem,
                 ano = f.ano,
+                generos = f.Genero.Select(g => new GeneroDTO
+                {
+                    generoID = g.generoID,
+                    nome = g.nome
+                }).ToList(),
+                
+                directores = f.Director.Select(g => new DirectorDTO
+                {
+                    directorID = g.directorID,
+                    nome = g.nome,
+                    idade = g.idade, 
+                    bio = g.bio,  
+                    imagem = g.imagem,
+                        
+                }).ToList(),
                 actores = f.Actor.Select(a => new ActorDTO
                 {
                     actorID = a.actorID,
