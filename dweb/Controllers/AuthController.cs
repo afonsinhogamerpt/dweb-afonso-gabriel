@@ -10,11 +10,11 @@ namespace dweb.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<Utilizador> _userManager;
+    private readonly SignInManager<Utilizador> _signInManager;
     private readonly AppDbContext _context;
 
-    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppDbContext context)
+    public AuthController(UserManager<Utilizador> userManager, SignInManager<Utilizador> signInManager, AppDbContext context)
     {
         _userManager = userManager; 
         _signInManager = signInManager;
@@ -53,7 +53,7 @@ public class AuthController : Controller
               return View(registo);
         }
         
-        var u = new Utilizador { UserName = registo.Email, Email = registo.Email };
+        var u = new Utilizador { UserName = registo.Email, Email = registo.Email, PhoneNumber = "919191919"};
         var result = await _userManager.CreateAsync(u, registo.Password);
 
         if (result.Succeeded)
@@ -73,8 +73,10 @@ public class AuthController : Controller
         {
             return View(login);
         }
+
+        //return Ok(login);
         
-        var username = await _userManager.FindByEmailAsync(login.Email);
+        var username = await  _userManager.FindByEmailAsync(login.Email);
         if (username==null)
         {
             return Ok("Não existe nenhum utilizador registado com o email introduzido");

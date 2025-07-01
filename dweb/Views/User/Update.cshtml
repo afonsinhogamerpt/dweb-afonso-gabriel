@@ -1,28 +1,135 @@
-﻿@{
+﻿@model dweb.Models.Utilizador
+@{
     ViewData["Title"] = "Update";
 }
 
-<div class="min-h-screen bg-blue-100 flex flex-col items-center justify-center p-4">
-    <div class="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md relative">
+<div class="container py-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <input type="hidden" id="userId" value="@Model.Id" />
+            <div class="d-flex justify-content-end mb-3">
+                <img src="@(!string.IsNullOrEmpty(Model.Imagem) ? Model.Imagem : "https://i.pravatar.cc/100")"
+                     class="rounded-circle border border-2 border-primary"
+                     alt="Foto de perfil" width="80" height="80" />
+            </div>
 
-        
-        <div class="flex justify-end mb-4">
-            <img src="https://i.pravatar.cc/100" class="w-16 h-16 rounded-full border-2 border-blue-300" />
-        </div>
+            <h4 class="mb-3">Dados do Utilizador</h4>
 
-        
-        <div class="space-y-3">
-            <p class="text-lg font-medium"><strong>Nome:</strong> João Silva</p>
-            <p class="text-lg font-medium"><strong>Email:</strong> joao@email.com</p>
+            <p><strong>Nome:</strong> @Model.UserName</p>
+            <p><strong>Email:</strong> @Model.Email</p>
 
-            <div class="flex justify-between pt-4 border-t mt-4">
-                <a class="text-blue-600 hover:underline">Alterar password</a>
-                <a class="text-red-500 hover:underline">Eliminar conta</a>
+            <hr/>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                    Alterar Password
+                </button>
+
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    Eliminar Conta
+                </button>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                    Atualizar Dados
+                </button>
             </div>
         </div>
     </div>
-
-    
-    <footer class="mt-8 text-gray-600 text-sm">
-    </footer>
 </div>
+
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-controller="Utilizador" asp-action="ChangePassword" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Alterar Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label for="newPassword" class="form-label">Nova Password</label>
+                    <input type="password" class="form-control" id="newPassword" name="NewPassword" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-warning">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Utilizador" asp-action="DeleteUtilizador" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="deleteAccountModalLabel">Eliminar Conta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    Tem a certeza que pretende eliminar a conta? Esta ação é irreversível.
+                    <input type="hidden" name="id" value="@Model.Id" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-controller="Utilizador" asp-action="UpdateDados" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Editar Dados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label for="UserName" class="form-label">Nome</label>
+                    <input type="text" class="form-control" name="UserName" value="@Model.UserName" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="email" class="form-control" name="Email" value="@Model.Email" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="Imagem" class="form-label">URL da Imagem</label>
+                    <input type="text" class="form-control" name="Imagem" value="@Model.Imagem" />
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('confirmChangePassword').addEventListener('click', function () {
+            alert("Password alterada com sucesso!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+            modal.hide();
+        });
+
+        document.getElementById('confirmDeleteAccount').addEventListener('click', function () {
+            alert("Conta eliminada com sucesso!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteAccountModal'));
+            modal.hide();
+        });
+    </script>
+}
+

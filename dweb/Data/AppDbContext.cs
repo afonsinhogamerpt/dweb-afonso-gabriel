@@ -6,7 +6,7 @@ namespace dweb.Data;
 using Microsoft.EntityFrameworkCore;
 
 
-public class AppDbContext : IdentityDbContext<IdentityUser>
+public class AppDbContext : IdentityDbContext<Utilizador>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) 
         : base(options) { }
