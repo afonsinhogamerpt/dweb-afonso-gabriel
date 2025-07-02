@@ -1,17 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using dweb.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers;
 
 public class UserController : Controller
 {
+    
+    private readonly UserManager<Utilizador> _userManager;
+
+    public UserController(UserManager<Utilizador> userManager)
+    {
+        _userManager = userManager;
+    }
     // GET
     public IActionResult Index()
     {
         return View();
     }
     
-    public IActionResult Update()
+    public async Task<IActionResult> Update()
     {
-        return View();
+        var user = await _userManager.GetUserAsync(User);
+
+        
+        if (user is not Utilizador utilizador)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        return View(utilizador); 
     }
 }
