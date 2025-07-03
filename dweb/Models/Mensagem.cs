@@ -12,6 +12,6 @@ public class Mensagem
     public string conteudo { get; set; }
     
     public string UserID { get; set; }
-    public Utilizador User { get; set; } 
+    public Utilizador? User { get; set; } 
     public DateTime timestamp { get; set; }
 }

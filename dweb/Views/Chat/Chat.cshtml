@@ -1,20 +1,41 @@
 ﻿@page
 @model List<dweb.Models.Mensagem>
 
+@{
+    var userID = ViewData?["UserID"]?.ToString() ?? "";
+}
+
 <h2>Chat de Mensagens</h2>
 
-<div id="chatBox">
-    @foreach (var msg in Model)
-    {
-        <div>@msg.conteudo</div> 
-    }
-</div>
+<div id="chatBox"></div>
 
 <input type="text" id="messageInput" placeholder="Escrever" />
 <button onclick="sendMessage()">Enviar</button>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
+    const userID = '@userID';
+
+    async function loadMessages() {
+        try {
+            const response = await fetch('/api/Mensagem');
+            const mensagens = await response.json();
+
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = '';
+
+            mensagens.forEach(msg => {
+                const div = document.createElement('div');
+                div.textContent = `${msg.usuarioNome || 'Anônimo'}: ${msg.conteudo} (${new Date(msg.timestamp).toLocaleTimeString()})`;
+                chatBox.appendChild(div);
+            });
+        } catch (err) {
+            console.error('Erro ao carregar mensagens:', err);
+        }
+    }
+
+    loadMessages();
+
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/chathub")
         .build();
@@ -30,14 +51,32 @@
         return console.error(err.toString());
     });
 
-    function sendMessage() {
+    async function sendMessage() {
         const message = document.getElementById("messageInput").value;
-        if (message) {
-            connection.invoke("SendMessage", message)
-                .catch(function (err) {
-                    return console.error(err.toString());
-                });
+        if (!message) return;
+
+        try {
+            const novaMensagem = {
+                conteudo: message,
+                UserID: userID
+            };
+
+            const response = await fetch('/api/Mensagem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(novaMensagem)
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao enviar mensagem');
+            }
+
             document.getElementById("messageInput").value = '';
+            
+            connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
+
+        } catch (err) {
+            console.error(err);
         }
     }
 </script>

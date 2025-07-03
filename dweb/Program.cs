@@ -33,7 +33,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, DummyEmailSender>();
-
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
@@ -63,6 +63,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapControllers();
 
 app.UseHttpsRedirection();
 app.UseRouting();

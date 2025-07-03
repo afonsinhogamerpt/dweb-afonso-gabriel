@@ -1,4 +1,5 @@
-﻿using dweb.Data;
+﻿using System.Security.Claims;
+using dweb.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,10 @@ public class ChatController : Controller
             Include(u => u.User ). 
             OrderBy(u => u.timestamp). 
             ToListAsync();
+        
+        var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        ViewData["UserID"] = userId;
+        
         return View(mensagens);
     }
 }

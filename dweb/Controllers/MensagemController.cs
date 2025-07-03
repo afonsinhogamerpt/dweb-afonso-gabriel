@@ -48,11 +48,26 @@ public class MensagemController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> PostMensagens(Mensagem mensagem)
+    public async Task<IActionResult> PostMensagens([FromBody] MensagemDTO mensagem)
     {
-        _context.Mensagem.Add(mensagem);
+
+        var user = await _context.Users.FindAsync(mensagem.UserID);
+        
+        if (user == null)
+        {
+            return Ok();
+        }
+        var me = new Mensagem
+        {
+            conteudo = mensagem.conteudo,
+            timestamp = DateTime.Now,
+            User = user,
+            UserID = mensagem.UserID
+        };
+        
+        _context.Mensagem.Add(me);
         await _context.SaveChangesAsync();
-        return Ok(mensagem);
+        return Ok(me);
     }
     
     
