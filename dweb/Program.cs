@@ -1,3 +1,4 @@
+using dweb.Controllers;
 using dweb.Data;
 using dweb.Models;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,10 @@ builder.Services.AddIdentity<Utilizador, IdentityRole>()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddSignalR();
+
+
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -32,6 +37,8 @@ builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSe
 
 
 var app = builder.Build();
+
+app.MapHub<ChatHub>("/chathub");
 
 using (var scope = app.Services.CreateScope())
 {

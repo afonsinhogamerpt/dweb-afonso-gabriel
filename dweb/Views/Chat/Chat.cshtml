@@ -1,17 +1,40 @@
 ﻿@page
-@model dweb.Views.Chat.Chat
+@model List<dweb.Models.Mensagem>
 
 
 
-<!DOCTYPE html>
+<h2>Chat de Mensagens</h2>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>
+<div id="chatBox"></div>
+
+<input type="text" id="messageInput" placeholder="Escrever" />
+<button onclick="sendMessage()">Enviar</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    connection.on("ReceiveMessage", function (message) {
+        const chatBox = document.getElementById("chatBox");
+        const msg = document.createElement("div");
+        msg.textContent = message;
+        chatBox.appendChild(msg);
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    function sendMessage() {
+        const message = document.getElementById("messageInput").value;
+        if (message) {
+            connection.invoke("SendMessage", message)
+                .catch(function (err) {
+                    return console.error(err.toString());
+                });
+            document.getElementById("messageInput").value = '';
+        }
+    }
+</script>
