@@ -1,11 +1,14 @@
 ﻿@page
 @model List<dweb.Models.Mensagem>
 
-
-
 <h2>Chat de Mensagens</h2>
 
-<div id="chatBox"></div>
+<div id="chatBox">
+    @foreach (var msg in Model)
+    {
+        <div>@msg.conteudo</div> 
+    }
+</div>
 
 <input type="text" id="messageInput" placeholder="Escrever" />
 <button onclick="sendMessage()">Enviar</button>

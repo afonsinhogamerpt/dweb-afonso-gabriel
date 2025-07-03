@@ -1,0 +1,75 @@
+﻿using dweb.Data;
+using dweb.Models;
+using dweb.Models.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
+
+namespace dweb.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+
+public class MensagemController : Controller
+{
+    private readonly AppDbContext _context;
+
+    public MensagemController(AppDbContext context)
+    {
+        _context = context;
+    }
+    
+    
+    [HttpGet]
+    public async Task<IActionResult> GetMensagens()
+    {
+        var mensagens = await _context.Mensagem.ToListAsync();
+        
+        return Ok(mensagens);
+    }
+    
+    [HttpPut]
+    public async Task<IActionResult> PutMensagens(Mensagem mensagem)
+    {
+        
+        var m = await _context.Mensagem. 
+            Where(me => me.mensagemID == mensagem.mensagemID).
+            FirstOrDefaultAsync();
+        
+        if (m is not Mensagem)
+        {
+            return NotFound();
+        }
+        m.conteudo = mensagem.conteudo;
+        m.timestamp = DateTime.Now;
+        
+        await _context.SaveChangesAsync();
+        return Ok(m);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> PostMensagens(Mensagem mensagem)
+    {
+        _context.Mensagem.Add(mensagem);
+        await _context.SaveChangesAsync();
+        return Ok(mensagem);
+    }
+    
+    
+    [HttpDelete]
+    public async Task<IActionResult> DeleteMensagens(Mensagem mensagem)
+    {
+        var me = await _context.Mensagem. 
+            Where(me => me.mensagemID == mensagem.mensagemID). 
+            FirstOrDefaultAsync();
+
+        if (me is not Mensagem)
+        {
+            return NotFound();
+        }
+        
+        _context.Mensagem.Remove(me);
+        await _context.SaveChangesAsync();
+        return Ok("Mensagem apagada com sucesso!");
+    }
+}
