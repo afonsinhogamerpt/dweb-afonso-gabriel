@@ -179,16 +179,31 @@ public class FilmeController : Controller
         return Ok("Filme removido com sucesso!");
     }
 
-    // Action para exibir detalhes do filme
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]
-    public IActionResult FilmeDetails(int id)
+    public async Task<IActionResult> FilmeDetails(int id)
     {
-        var filme = _context.Filme.FirstOrDefault(f => f.filmeID == id);
+        var filme = await _context.Filme.FirstOrDefaultAsync(f => f.filmeID == id);
         if (filme == null)
         {
             return NotFound();
         }
+
+        // Verifica se o user autenticado já guardou este filme
+        bool filmeGuardado = false;
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var utilizador = await _context.Utilizador.Include(u => u.Filmes).FirstOrDefaultAsync(u => u.Id == userId);
+                if (utilizador != null && utilizador.Filmes != null)
+                {
+                    filmeGuardado = utilizador.Filmes.Any(f => f.filmeID == id);
+                }
+            }
+        }
+        ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
 }

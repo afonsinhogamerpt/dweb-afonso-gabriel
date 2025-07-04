@@ -63,14 +63,43 @@ public class UserController : Controller
     public async Task<IActionResult> UserFilms()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+       if (user == null)
+        {
             return Unauthorized();
-
+        }
         var utilizadorComFilmes = _context.Utilizador
             .Include(u => u.Filmes)
             .FirstOrDefault(u => u.Id == user.Id);
 
         var filmes = utilizadorComFilmes?.Filmes?.ToList() ?? new List<Filme>();
         return View(filmes);
+    }
+    [HttpPost]
+    public async Task<IActionResult> RetirarFilme(int filmeId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+        // Carregar o utilizador com os filmes do contexto para garantir tracking
+        var utilizadorComFilmes = _context.Utilizador
+            .Include(u => u.Filmes)
+            .FirstOrDefault(u => u.Id == user.Id);
+        if (utilizadorComFilmes == null)
+        {
+            return Unauthorized();
+        }
+        var filme = await _context.Filme.FindAsync(filmeId);
+        if (filme == null)
+        {
+            return NotFound();
+        }
+        if (utilizadorComFilmes.Filmes != null && utilizadorComFilmes.Filmes.Any(f => f.filmeID == filmeId))
+        {
+            utilizadorComFilmes.Filmes.Remove(filme);
+            await _context.SaveChangesAsync();
+        }
+        return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
 }

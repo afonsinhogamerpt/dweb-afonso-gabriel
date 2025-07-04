@@ -16,11 +16,12 @@ else
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="@filme.imagem" class="card-img-top" alt="@filme.nome" style="max-height:100%;object-fit:cover;">
+                    <img src="@filme.imagem" class="card-img-top" alt="@filme.nome" style="max-height:100px;object-fit:cover;">
                     <div class="card-body">
                         <h5 class="card-title">@filme.nome (@filme.ano)</h5>
                         <p class="card-text">@filme.resumo</p>
                         <a asp-controller="Filme" asp-action="FilmeDetails" asp-route-id="@filme.filmeID" class="btn btn-primary">Ver detalhes</a>
+                        
                     </div>
                 </div>
             </div>
