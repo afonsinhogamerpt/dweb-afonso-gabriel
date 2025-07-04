@@ -11,7 +11,10 @@ public class Mensagem
     public int mensagemID { get; set; }
     public string conteudo { get; set; }
     
+    [Required]
     public string UserID { get; set; }
+    
+    [ForeignKey(nameof(UserID))]
     public Utilizador? User { get; set; } 
     public DateTime timestamp { get; set; }
 }

@@ -21,9 +21,20 @@ public class MensagemController : Controller
     
     
     [HttpGet]
-    public async Task<IActionResult> GetMensagens()
+    public async Task<ActionResult<IEnumerable<MensagemOutputDTO>>> GetMensagens()
     {
-        var mensagens = await _context.Mensagem.ToListAsync();
+        var mensagens = await _context.Mensagem.
+            Include(m => m.User).
+            OrderBy(m => m.timestamp).
+            Select(m => new MensagemOutputDTO
+            {
+                mensagemID = m.mensagemID,
+                conteudo = m.conteudo,
+                timestamp = m.timestamp,
+                UserID = m.UserID,
+                username = m.User.UserName
+            }).
+            ToListAsync();
         
         return Ok(mensagens);
     }
@@ -67,7 +78,7 @@ public class MensagemController : Controller
         
         _context.Mensagem.Add(me);
         await _context.SaveChangesAsync();
-        return Ok(me);
+        return Ok(mensagem);
     }
     
     

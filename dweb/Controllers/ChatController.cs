@@ -24,6 +24,10 @@ public class ChatController : Controller
             ToListAsync();
         
         var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+
+       
+        
+        //return Ok(userId);
         ViewData["UserID"] = userId;
         
         return View(mensagens);
