@@ -1,16 +1,20 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using dweb.Models;
+using dweb.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly AppDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, AppDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
@@ -23,9 +27,26 @@ public class HomeController : Controller
         return View();
     }
     
-    public IActionResult Pesquisar()
+    public IActionResult Pesquisar(int? generoId, string search, int page = 1)
     {
-        return View();
+        int pageSize = 6;
+        var generos = _context.Genero.ToList();
+        var filmesQuery = _context.Filme.Include(f => f.Genero).AsQueryable();
+        if (generoId.HasValue)
+        {
+            filmesQuery = filmesQuery.Where(f => f.Genero.Any(g => g.generoID == generoId));
+        }
+        if (!string.IsNullOrEmpty(search))
+        {
+            filmesQuery = filmesQuery.Where(f => f.nome.Contains(search));
+        }
+        var filmes = filmesQuery.ToList();
+        ViewBag.Generos = generos;
+        ViewBag.SelectedGenero = generoId;
+        ViewBag.Search = search;
+        ViewBag.Page = page;
+        ViewBag.PageSize = pageSize;
+        return View(filmes);
     }
 
 

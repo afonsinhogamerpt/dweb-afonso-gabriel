@@ -1,61 +1,84 @@
-﻿@using System.IO
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
-
+﻿@model IEnumerable<dweb.Models.Filme>
+@using dweb.Models
 @{
     ViewData["Title"] = "Pesquisar Filmes";
+    var generos = ViewBag.Generos as List<Genero>;
+    int? selectedGenero = ViewBag.SelectedGenero != null ? (int?)ViewBag.SelectedGenero : null;
+    string search = ViewBag.Search as string ?? string.Empty;
+    int page = ViewBag.Page != null ? (int)ViewBag.Page : 1;
+    int pageSize = 6;
+    var filmes = Model?.Skip((page - 1) * pageSize).Take(pageSize).ToList() ?? new List<Filme>();
+    int filmesCount = Model?.Count() ?? 0;
+    int totalPages = (int)Math.Ceiling((double)filmesCount / pageSize);
 }
-
 <div class="container-fluid py-5" style="background-color: #f8f9fa;">
     <h2 class="mb-4 text-center">Pesquisar Filmes</h2>
-
-    <div class="row mb-4 justify-content-center">
-        <div class="col-md-6 d-flex justify-content-center align-items-center">
-            <input type="text" class="form-control me-2" placeholder="Search bar" />
-            <button class="btn btn-primary" type="submit">Pesquisar</button>
+    <form asp-action="Pesquisar" method="get">
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search bar" value="@search" />
+                <button class="btn btn-primary" type="submit">Pesquisar</button>
+            </div>
         </div>
-    </div>
-
+    </form>
     <div class="row">
-        <!-- Sidebar dos géneros -->
         <div class="col-md-2">
             <div class="p-3 rounded shadow-sm mb-4" style="background-color: #e0e0e0;">
                 <h5>Genres</h5>
                 <ul class="list-unstyled ms-2">
-                    <li><a href="#">teste</a></li>
-                    <li><a href="#">teste</a></li>
-                    <li><a href="#">teste</a></li>
-                    <li><a href="#">teste</a></li>
+                    <li><a href="@Url.Action("Pesquisar", new { search = search })" class="@(selectedGenero == null ? "fw-bold text-primary" : "")">Todos</a></li>
+                    @if (generos != null)
+                    {
+                        foreach (var genero in generos)
+                        {
+                            <li><a href="@Url.Action("Pesquisar", new { generoId = genero.generoID, search = search })" class="@(selectedGenero == genero.generoID ? "fw-bold text-primary" : "")">@genero.nome</a></li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
-        <!-- Grid dos Filmes -->
         <div class="col-md-10">
             <div class="p-3 rounded" style="background-color: #e0e0e0;">
                 <div class="row">
-                    @for (int i = 0; i < 6; i++)
+                    @for (int i = 0; i < pageSize; i++)
                     {
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 shadow-sm">
-                                <img src="https://via.placeholder.com/"
-                                     class="card-img-top"
-                                     alt="Imagem do Filme"
-                                     style="object-fit: cover; width: 100%; height: 300px; max-width: 100%; max-height: 300px;" />
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">Filme Aleatório</h5>
-                                    <p class="card-text">Pequena descrição do filme...</p>
-                                    <a href="#" class="btn btn-outline-primary mt-auto">Ver Detalhes</a>
+                        if (i < filmes.Count)
+                        {
+                            var filme = filmes[i];
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <img src="@filme.imagem"
+                                         class="card-img-top"
+                                         alt="Imagem do Filme"
+                                         style="object-fit: cover; width: 100%; height: 100%" />
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">@filme.nome (@filme.ano)</h5>
+                                        <p class="card-text overflow-hidden text-ellipsis" style="-webkit-line-clamp: 3; display: -webkit-box; -webkit-box-orient: vertical; min-height: 4.5em;">@filme.resumo</p>
+                                        <a asp-controller="Filme" asp-action="FilmeDetails" asp-route-id="@filme.filmeID" class="btn btn-outline-primary mt-auto">Ver Detalhes</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm bg-light">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 380px;">
+                                        <span class="text-muted">(Vazio)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     }
                 </div>
-                <!-- Paginação teste-->
                 <nav class="mt-4">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">...</a></li>
+                        @for (int p = 1; p <= totalPages; p++)
+                        {
+                            <li class="page-item @(p == page ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Pesquisar", new { generoId = selectedGenero, search = search, page = p })">@p</a>
+                            </li>
+                        }
                     </ul>
                 </nav>
             </div>

@@ -38,6 +38,20 @@ public class DirectorController : Controller
         return NotFound();
     }
 
+    [HttpGet]
+    [Route("/Director/DirectorDetails/{id}")]
+    public IActionResult DirectorDetails(int id)
+    {
+        var director = _context.Director.FirstOrDefault(a => a.directorID == id);
+        if (director == null)
+        {
+            return NotFound();
+        }
+        return View(director);
+    }
+
+
+
     [HttpPost]
     public async Task<IActionResult> PostDirector(Director director)
     {

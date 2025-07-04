@@ -1,6 +1,10 @@
 @model dweb.Models.Filme
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Detalhes do Filme";
+    var returnUrl = HttpContextAccessor.HttpContext?.Request.Headers["Referer"].ToString();
+    var actores = ViewBag.Actores as List<Actor>;
+    var directores = ViewBag.Directores as List<Director>;
 }
 <div class="container mt-5">
     <div class="row">
@@ -10,7 +14,35 @@
         <div class="col-md-8">
             <h2>@Model.nome (@Model.ano)</h2>
             <p><strong>Resumo:</strong> @Model.resumo</p>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary mt-3">Voltar</a>
+            <p>
+                <strong>Actores:</strong>
+                @if (actores != null && actores.Any())
+                {
+                    foreach (var actor in actores)
+                    {
+                        <a href="@Url.Action("ActorDetails", "Actor", new { id = actor.actorID })">@actor.nome</a>@(actor != actores.Last() ? ", " : "")
+                    }
+                }
+                else
+                {
+                    <span>Nenhum actor registado.</span>
+                }
+            </p>
+            <p>
+                <strong>Directores:</strong>
+                @if (directores != null && directores.Any())
+                {
+                    foreach (var director in directores)
+                    {
+                        <a href="@Url.Action("DirectorDetails", "Director", new { id = director.directorID })">@director.nome</a>@(director != directores.Last() ? ", " : "")
+                    }
+                }
+                else
+                {
+                    <span>Nenhum director registado.</span>
+                }
+            </p>
+            <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
         </div>
     </div>
 </div>
