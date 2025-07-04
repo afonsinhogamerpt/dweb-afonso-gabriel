@@ -13,7 +13,7 @@ public class AuthController : Controller
     private readonly UserManager<Utilizador> _userManager;
     private readonly SignInManager<Utilizador> _signInManager;
     private readonly AppDbContext _context;
-
+    
     public AuthController(UserManager<Utilizador> userManager, SignInManager<Utilizador> signInManager, AppDbContext context)
     {
         _userManager = userManager; 
@@ -21,13 +21,13 @@ public class AuthController : Controller
         _context = context;
     }
 
-    [HttpGet]
+    [HttpGet("login")]
     public IActionResult Login()
     {
         return Redirect("/Identity/Account/Login");
     }
     
-    [HttpGet]
+    [HttpGet("registo")]
     public IActionResult Registo()
     {
         return Redirect("/Identity/Account/Register");

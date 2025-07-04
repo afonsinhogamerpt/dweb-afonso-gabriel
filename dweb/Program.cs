@@ -21,9 +21,6 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
 
-
-
-
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login"; 
