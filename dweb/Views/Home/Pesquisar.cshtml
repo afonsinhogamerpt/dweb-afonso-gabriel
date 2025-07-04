@@ -1,5 +1,12 @@
-﻿@model IEnumerable<dweb.Models.Filme>
+
+@using System.IO
+@using System.Text.Json
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+
+
+@model IEnumerable<dweb.Models.Filme>
 @using dweb.Models
+
 @{
     ViewData["Title"] = "Pesquisar Filmes";
     var generos = ViewBag.Generos as List<Genero>;
@@ -13,15 +20,17 @@
 }
 <div class="container-fluid py-5" style="background-color: #f8f9fa;">
     <h2 class="mb-4 text-center">Pesquisar Filmes</h2>
-    <form asp-action="Pesquisar" method="get">
-        <div class="row mb-4 justify-content-center">
-            <div class="col-md-6 d-flex justify-content-center align-items-center">
-                <input type="text" name="search" class="form-control me-2" placeholder="Search bar" value="@search" />
-                <button class="btn btn-primary" type="submit">Pesquisar</button>
-            </div>
+
+    <form asp-action="Pesquisar" asp-controller="Home" method="get" class="d-flex justify-content-center align-items-center mb-4">
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <input type="text" value="@ViewData["SearchTerm"]" name="query" class="form-control me-2" placeholder="Search bar" />
+            <button class="btn btn-primary" type="submit">Pesquisar</button>
         </div>
     </form>
+
     <div class="row">
+        
+
         <div class="col-md-2">
             <div class="p-3 rounded shadow-sm mb-4" style="background-color: #e0e0e0;">
                 <h5>Genres</h5>
@@ -37,6 +46,7 @@
                 </ul>
             </div>
         </div>
+
         <div class="col-md-10">
             <div class="p-3 rounded" style="background-color: #e0e0e0;">
                 <div class="row">
