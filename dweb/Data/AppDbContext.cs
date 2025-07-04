@@ -20,4 +20,16 @@ public class AppDbContext : IdentityDbContext<Utilizador>
     
     public DbSet<Mensagem> Mensagem { get; set; }
     
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder); 
+
+        modelBuilder.Entity<Mensagem>()
+            .HasOne(m => m.User)
+            .WithMany(u => u.Mensagem) 
+            .HasForeignKey(m => m.UserID)
+            .OnDelete(DeleteBehavior.Restrict); 
+    }
+    
 }

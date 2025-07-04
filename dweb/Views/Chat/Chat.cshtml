@@ -1,17 +1,201 @@
 ﻿@page
-@model dweb.Views.Chat.Chat
+@using System.Text.Json
+@model List<dweb.Models.Mensagem>
 
 
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
+<div class="titulo">
+    <h2>Chat de Mensagens</h2>
 </div>
-</body>
-</html>
+
+
+<div id="chatBox" class="chat-box"></div>
+
+<div class="input-container">
+    <input type="text" id="messageInput" placeholder="Escrever..." autocomplete="off" />
+    <button onclick="sendMessage()">Enviar</button>
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f7;
+        margin: 20px;
+    }
+    
+    .titulo{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+    }
+    
+    h2 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .chat-box {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        height: 400px;
+        overflow-y: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
+    }
+    .message {
+        max-width: 70%;
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        line-height: 1.4;
+        font-size: 14px;
+        word-wrap: break-word;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .message .username {
+        font-weight: 600;
+        margin-bottom: 3px;
+        font-size: 12px;
+        color: #555;
+    }
+    .message .timestamp {
+        font-size: 10px;
+        color: #999;
+        text-align: right;
+        margin-top: 5px;
+    }
+    .message.own {
+        background-color: #cfe9ff;
+        color: #1a3d7c;
+        margin-left: auto;
+        border-bottom-right-radius: 0;
+    }
+    .message.other {
+        background-color: #e5e5ea;
+        color: #333;
+        margin-right: auto;
+        border-bottom-left-radius: 0;
+    }
+    .input-container {
+        display: flex;
+        gap: 10px;
+    }
+    #messageInput {
+        flex-grow: 1;
+        padding: 10px 15px;
+        font-size: 14px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+    #messageInput:focus {
+        border-color: #1a73e8;
+        box-shadow: 0 0 5px #1a73e8;
+    }
+    button {
+        background-color: #1a73e8;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    button:hover {
+        background-color: #155ab6;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+
+    const userID = @Html.Raw(JsonSerializer.Serialize(ViewBag.UserID ?? ""));
+    
+    async function loadMessages() {
+        try {
+            const response = await fetch('/api/Mensagem');
+            const mensagens = await response.json();
+
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = '';
+
+            mensagens.forEach(msg => {
+                const div = document.createElement('div');
+                div.classList.add('message');
+                
+                console.log("msg.userID:", `"${msg.userID}"`);
+                console.log("userID:", `"${userID}"`);
+                console.log("iguais?", msg.userID === userID);
+                
+                if (msg.userID === userID) {
+                    div.classList.add('own');
+                } else {
+                    div.classList.add('other');
+                }
+
+                div.innerHTML = `
+                    <div class="username">${msg.username || 'Anónimo'}</div>
+                    <div>${msg.conteudo}</div>
+                    <div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                `;
+                chatBox.appendChild(div);
+            });
+
+            
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (err) {
+            console.error('Erro ao carregar mensagens:', err);
+        }
+    }
+
+    loadMessages();
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    connection.on("ReceiveMessage", function (message) {
+        
+        loadMessages(); 
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    async function sendMessage() {
+        const input = document.getElementById("messageInput");
+        const message = input.value.trim();
+        if (!message) return;
+
+        try {
+            const novaMensagem = {
+                conteudo: message,
+                UserID: userID
+            };
+
+            const response = await fetch('/api/Mensagem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(novaMensagem)
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao enviar mensagem');
+            }
+
+            input.value = '';
+
+            await connection.invoke("SendMessage", message);
+            
+            loadMessages();
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+</script>

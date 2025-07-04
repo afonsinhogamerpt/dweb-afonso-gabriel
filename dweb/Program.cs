@@ -1,3 +1,4 @@
+using dweb.Controllers;
 using dweb.Data;
 using dweb.Models;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,10 @@ builder.Services.AddIdentity<Utilizador, IdentityRole>()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddSignalR();
+
+
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -28,10 +33,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, DummyEmailSender>();
-
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
+
+app.MapHub<ChatHub>("/chathub");
 
 using (var scope = app.Services.CreateScope())
 {
@@ -56,6 +63,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapControllers();
 
 app.UseHttpsRedirection();
 app.UseRouting();
