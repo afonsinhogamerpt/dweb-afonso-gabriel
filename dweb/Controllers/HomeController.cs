@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using dweb.Models;
 using Microsoft.IdentityModel.Tokens;
 
+using dweb.Data;
+using Microsoft.EntityFrameworkCore;
+
+
 namespace dweb.Controllers;
 
 public class HomeController : Controller
@@ -29,11 +33,28 @@ public class HomeController : Controller
         return View();
     }
     
-    [HttpGet]
-    public IActionResult Pesquisar(string query)
+
+    public IActionResult Pesquisar(int? generoId, string search, int page = 1, string query)
     {
         ViewData["SearchTerm"] = query.IsNullOrEmpty() ? "" : query;
-        return View();
+        int pageSize = 6;
+        var generos = _context.Genero.ToList();
+        var filmesQuery = _context.Filme.Include(f => f.Genero).AsQueryable();
+        if (generoId.HasValue)
+        {
+            filmesQuery = filmesQuery.Where(f => f.Genero.Any(g => g.generoID == generoId));
+        }
+        if (!string.IsNullOrEmpty(search))
+        {
+            filmesQuery = filmesQuery.Where(f => f.nome.Contains(search));
+        }
+        var filmes = filmesQuery.ToList();
+        ViewBag.Generos = generos;
+        ViewBag.SelectedGenero = generoId;
+        ViewBag.Search = search;
+        ViewBag.Page = page;
+        ViewBag.PageSize = pageSize;
+        return View(filmes);
     }
     
 

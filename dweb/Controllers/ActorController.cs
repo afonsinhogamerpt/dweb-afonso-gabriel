@@ -36,6 +36,18 @@ public class ActorController : Controller
         }
         return NotFound();
     }
+
+    [HttpGet]
+    [Route("/Actor/ActorDetails/{id}")]
+    public IActionResult ActorDetails(int id)
+    {
+        var actor = _context.Actor.FirstOrDefault(a => a.actorID == id);
+        if (actor == null)
+        {
+            return NotFound();
+        }
+        return View(actor);
+    }
     
     [HttpPost]
     public async Task<ActionResult<Actor>> PostActor(Actor actor)

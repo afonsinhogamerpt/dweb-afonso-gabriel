@@ -179,16 +179,20 @@ public class FilmeController : Controller
         return Ok("Filme removido com sucesso!");
     }
 
-    // Action para exibir detalhes do filme
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]
     public IActionResult FilmeDetails(int id)
     {
-        var filme = _context.Filme.FirstOrDefault(f => f.filmeID == id);
+        var filme = _context.Filme
+            .Include(f => f.Actor)
+            .Include(f => f.Director)
+            .FirstOrDefault(f => f.filmeID == id);
         if (filme == null)
         {
             return NotFound();
         }
+        ViewBag.Directores = filme.Director.ToList();
+        ViewBag.Actores = filme.Actor.ToList();
         return View(filme);
     }
 }
