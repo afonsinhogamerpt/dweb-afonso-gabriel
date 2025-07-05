@@ -195,6 +195,9 @@ public class FilmeController : BaseController
             return NotFound();
         }
 
+        ViewData["likes"] = filme.likes;
+        ViewData["dislikes"] = filme.dislikes;
+        
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
         bool filmeGuardado = false;
@@ -215,4 +218,5 @@ public class FilmeController : BaseController
         ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
+    
 }

@@ -60,6 +60,26 @@
                     </form>
                 }
             }
+            <form method="post" asp-action="" asp-controller="Filme">
+                <div class=" col-md-2">
+                    <div id="rates1" class="d-flex mt-4">
+                        <a><img style="width: 60px; height: 60px; cursor:pointer;" src="@Url.Content("~/images/heart.jpg")"/></a> <div style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">@ViewData["likes"]</div>
+
+                    </div>
+
+                    <div id="rates2" class="d-flex mt-4">
+                        <a><img style="width: 60px; height: 60px; cursor:pointer;" src="@Url.Content("~/images/dislike.jpg")"/></a> <div style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">@ViewData["dislikes"]</div>
+                    </div>
+                </div>
+            </form>
+            
+            
         </div>
     </div>
 </div>
+
+<style>
+    .rates .img{
+        
+    }
+</style>
