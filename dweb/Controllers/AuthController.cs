@@ -2,19 +2,21 @@
 using dweb.Data;
 using dweb.Models;
 using dweb.Models.DTOs;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers;
 
 
-public class AuthController : Controller
+public class AuthController : BaseController
 {
     private readonly UserManager<Utilizador> _userManager;
     private readonly SignInManager<Utilizador> _signInManager;
     private readonly AppDbContext _context;
     
-    public AuthController(UserManager<Utilizador> userManager, SignInManager<Utilizador> signInManager, AppDbContext context)
+    public AuthController(UserManager<Utilizador> userManager, SignInManager<Utilizador> signInManager, AppDbContext context) : base(context)
     {
         _userManager = userManager; 
         _signInManager = signInManager;
@@ -91,4 +93,12 @@ public class AuthController : Controller
         
         return BadRequest("Não foi possível efetuar o login");
     }
+    
+    [HttpGet("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+        return Redirect("/Identity/Account/Login");
+    }
+    
 }

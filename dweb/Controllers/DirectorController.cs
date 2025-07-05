@@ -6,12 +6,12 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DirectorController : Controller
+public class DirectorController : BaseController
 {
     
     private readonly AppDbContext _context;
 
-    public DirectorController(AppDbContext context)
+    public DirectorController(AppDbContext context) : base(context)
     {
         _context = context;
     }

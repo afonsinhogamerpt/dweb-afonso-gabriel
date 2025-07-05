@@ -9,12 +9,12 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UtilizadorController : Controller
+public class UtilizadorController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
 
-    public UtilizadorController(AppDbContext context, UserManager<Utilizador> userManager)
+    public UtilizadorController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
         _context = context;
         _userManager = userManager;

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using dweb.Data;
 using Microsoft.AspNetCore.Mvc;
 using dweb.Models;
@@ -10,12 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly ILogger<HomeController> _logger;
     private readonly AppDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger, AppDbContext context)
+    public HomeController(ILogger<HomeController> logger, AppDbContext context) : base(context)
     {
         _logger = logger;
         _context = context;
@@ -24,7 +25,6 @@ public class HomeController : Controller
     [HttpGet("/")]
     public IActionResult Index()
     {
-        
         return View();
     }
 

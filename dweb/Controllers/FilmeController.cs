@@ -9,12 +9,12 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FilmeController : Controller
+public class FilmeController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
 
-    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager)
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
         _context = context;
         _userManager = userManager;

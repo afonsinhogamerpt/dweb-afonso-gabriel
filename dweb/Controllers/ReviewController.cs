@@ -6,11 +6,11 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ReviewController : Controller
+public class ReviewController : BaseController
 {
     private readonly AppDbContext _context;
 
-    public ReviewController(AppDbContext context)
+    public ReviewController(AppDbContext context) : base(context)
     {
         _context = context;
     }
