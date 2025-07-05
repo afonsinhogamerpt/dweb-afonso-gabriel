@@ -34,7 +34,7 @@ public class HomeController : Controller
     }
     
 
-    public IActionResult Pesquisar(int? generoId, string search, int page = 1, string query)
+    public IActionResult Pesquisar(int? generoId, string search,string query, int page = 1)
     {
         ViewData["SearchTerm"] = query.IsNullOrEmpty() ? "" : query;
         int pageSize = 6;
