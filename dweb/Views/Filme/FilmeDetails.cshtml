@@ -43,6 +43,24 @@
                 }
             </p>
             <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (ViewBag.FilmeGuardado == true)
+                {
+                    <form asp-controller="User" asp-action="RetirarFilme" method="post" style="display:inline">
+                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                        <button type="submit" class="btn btn-danger mt-3">Retirar</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="User" asp-action="GuardarFilme" method="post" style="display:inline">
+                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                        <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+                    </form>
+                }
+            }
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary mt-3">Voltar</a>
         </div>
     </div>
 </div>

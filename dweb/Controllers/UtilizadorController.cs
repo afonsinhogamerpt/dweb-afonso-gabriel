@@ -1,7 +1,9 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
@@ -19,9 +21,25 @@ public class UtilizadorController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
+    public async Task<ActionResult<IEnumerable<UtilizadorDTO>>> GetUtilizadores()
     {
-        var utilizadores = _context.Utilizador.ToList();
+        var utilizadores = await _context.Utilizador
+            .Include(u => u.Filmes)
+            .Select(u => new UtilizadorDTO
+            {
+                Id = u.Id,
+                Email = u.Email,
+                Imagem = u.Imagem,
+                Filmes = u.Filmes.Select(f => new FilmeDTO
+                {
+                    filmeID = f.filmeID,
+                    nome = f.nome,
+                    resumo = f.resumo,
+                    imagem = f.imagem,
+                    ano = f.ano
+                }).ToList()
+            })
+            .ToListAsync();
         return Ok(utilizadores);
     }
 

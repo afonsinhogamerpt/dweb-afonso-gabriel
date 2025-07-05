@@ -3,6 +3,7 @@ using dweb.Models;
 using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Controllers;
 
@@ -11,10 +12,12 @@ namespace dweb.Controllers;
 public class FilmeController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<Utilizador> _userManager;
 
-    public FilmeController(AppDbContext context)
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -181,7 +184,7 @@ public class FilmeController : Controller
 
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]
-    public IActionResult FilmeDetails(int id)
+    public async Task<IActionResult> FilmeDetails(int id)
     {
         var filme = _context.Filme
             .Include(f => f.Actor)
@@ -191,8 +194,25 @@ public class FilmeController : Controller
         {
             return NotFound();
         }
+
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
+        bool filmeGuardado = false;
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var utilizador = await _context.Utilizador
+                    .Include(u => u.Filmes)
+                    .FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (utilizador?.Filmes != null)
+                {
+                    filmeGuardado = utilizador.Filmes.Any(f => f.filmeID == id);
+                }
+            }
+        }
+        ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
 }
