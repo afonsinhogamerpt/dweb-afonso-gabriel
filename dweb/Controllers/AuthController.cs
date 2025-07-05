@@ -78,7 +78,7 @@ public class AuthController : BaseController
 
         //return Ok(login);
         
-        var username = await  _userManager.FindByEmailAsync(login.Email);
+        var username = await _userManager.FindByEmailAsync(login.Email);
         if (username==null)
         {
             return Ok("Não existe nenhum utilizador registado com o email introduzido");

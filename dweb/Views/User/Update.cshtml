@@ -8,7 +8,9 @@
         <div class="card-body">
             <input type="hidden" id="userId" value="@Model.Id" />
             <div class="d-flex justify-content-end mb-3">
-                <img src="@(!string.IsNullOrEmpty(Model.Imagem) ? Model.Imagem : Url.Content("~/images/placeholder_user.jpg"))"
+                <img src="@(Model.Imagem != null && Model.Imagem.Length > 0
+                              ? $"data:image/png;base64,{Convert.ToBase64String(Model.Imagem)}"
+                              : Url.Content("~/images/placeholder_user.jpg"))"
                      class="rounded-circle border border-2 border-primary"
                      alt="Foto de perfil" width="80" height="80" />
             </div>
@@ -85,7 +87,7 @@
 
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form asp-controller="Utilizador" asp-action="UpdateDados" method="post" class="modal-content">
+        <form asp-controller="Utilizador" asp-action="UpdateDados" method="post" enctype="multipart/form-data" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editUserModalLabel">Editar Dados</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -105,10 +107,7 @@
 
                 <div class="col-md-3">
                     <input type="file" id="file" name="file" class=" imgdrop" multiple="multiple" />
-                    <div class="img-wrap">
-                        <span class="close">&times;</span>
-                        <img src="#" alt="Alternate Image" id="imgInp" width="200" height="200" />
-                    </div>
+                    
                 </div>
             </div>
 

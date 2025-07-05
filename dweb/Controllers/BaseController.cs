@@ -22,9 +22,9 @@ public class BaseController : Controller
             var user = _context.Utilizador.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
-                ViewData["UserImage"] = string.IsNullOrEmpty(user.Imagem)
-                    ? null
-                    : user.Imagem;
+                ViewData["UserImage"] = (user.Imagem != null && user.Imagem.Length > 0)
+                    ? $"data:image/png;base64,{Convert.ToBase64String(user.Imagem)}"
+                    : null;
                 ViewData["UserId"] = user.Id;
             }
         }

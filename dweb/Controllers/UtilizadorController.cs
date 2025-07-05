@@ -58,7 +58,7 @@ public class UtilizadorController : BaseController
     }
     
     [HttpPost("update-utilizador")]
-    public async Task<IActionResult> UpdateDados([FromForm] Utilizador model)
+    public async Task<IActionResult> UpdateDados([FromForm] Utilizador model, IFormFile? file)
     {
         var user = await _userManager.FindByIdAsync(model.Id);
         if (user == null)
@@ -69,6 +69,13 @@ public class UtilizadorController : BaseController
         user.UserName = model.UserName;
         user.Email = model.Email;
         user.Imagem = model.Imagem;
+
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            user.Imagem = memoryStream.ToArray();
+        }
 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
