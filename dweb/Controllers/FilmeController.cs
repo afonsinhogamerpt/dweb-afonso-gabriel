@@ -3,6 +3,7 @@ using dweb.Models;
 using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Controllers;
 
@@ -11,10 +12,12 @@ namespace dweb.Controllers;
 public class FilmeController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<Utilizador> _userManager;
 
-    public FilmeController(AppDbContext context)
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -189,15 +192,16 @@ public class FilmeController : Controller
             return NotFound();
         }
 
-        // Verifica se o user autenticado já guardou este filme
         bool filmeGuardado = false;
-        if (User.Identity != null && User.Identity.IsAuthenticated)
+        if (User.Identity?.IsAuthenticated == true)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (!string.IsNullOrEmpty(userId))
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
             {
-                var utilizador = await _context.Utilizador.Include(u => u.Filmes).FirstOrDefaultAsync(u => u.Id == userId);
-                if (utilizador != null && utilizador.Filmes != null)
+                var utilizador = await _context.Utilizador
+                    .Include(u => u.Filmes)
+                    .FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (utilizador?.Filmes != null)
                 {
                     filmeGuardado = utilizador.Filmes.Any(f => f.filmeID == id);
                 }

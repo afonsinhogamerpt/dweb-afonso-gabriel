@@ -82,7 +82,7 @@ public class UserController : Controller
         {
             return Unauthorized();
         }
-        // Carregar o utilizador com os filmes do contexto para garantir tracking
+        
         var utilizadorComFilmes = _context.Utilizador
             .Include(u => u.Filmes)
             .FirstOrDefault(u => u.Id == user.Id);
