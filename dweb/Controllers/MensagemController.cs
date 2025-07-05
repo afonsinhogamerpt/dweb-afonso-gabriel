@@ -10,11 +10,11 @@ namespace dweb.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 
-public class MensagemController : Controller
+public class MensagemController : BaseController
 {
     private readonly AppDbContext _context;
 
-    public MensagemController(AppDbContext context)
+    public MensagemController(AppDbContext context) : base(context)
     {
         _context = context;
     }

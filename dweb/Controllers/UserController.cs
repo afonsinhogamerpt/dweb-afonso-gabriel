@@ -6,18 +6,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
-public class UserController : Controller
+public class UserController : BaseController
 {
     
     private readonly UserManager<Utilizador> _userManager;
     private readonly AppDbContext _context;
 
-    public UserController(UserManager<Utilizador> userManager, AppDbContext context)
+    public UserController(UserManager<Utilizador> userManager, AppDbContext context) : base(context)
     {
         _userManager = userManager;
         _context = context;
     }
-    // GET
+   
     public IActionResult Index()
     {
         return View();

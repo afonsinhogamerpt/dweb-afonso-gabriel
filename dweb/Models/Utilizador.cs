@@ -4,7 +4,7 @@ namespace dweb.Models;
 
 public class Utilizador : IdentityUser
 {
-    public string? Imagem { get; set; } 
+    public byte[]? Imagem { get; set; } 
     public ICollection<Filme> ?Filmes { get; set; }
     public ICollection<Mensagem> ?Mensagem { get; set; } 
 }

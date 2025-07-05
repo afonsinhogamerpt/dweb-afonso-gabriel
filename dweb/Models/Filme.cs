@@ -14,6 +14,10 @@ public class Filme
     public string imagem { get; set; }
     public int ano { get; set; }
     
+    public int likes { get; set; }
+    
+    public int dislikes { get; set; }
+    
     public ICollection<Utilizador> Utilizador { get; set; } = new List<Utilizador>();
     public ICollection<Actor> Actor { get; set; } = new List<Actor>();
     public ICollection<Review> ?FKReview { get; set; }

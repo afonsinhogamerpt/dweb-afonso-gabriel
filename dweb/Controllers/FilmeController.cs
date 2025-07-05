@@ -9,12 +9,12 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FilmeController : Controller
+public class FilmeController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
 
-    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager)
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
         _context = context;
         _userManager = userManager;
@@ -195,6 +195,9 @@ public class FilmeController : Controller
             return NotFound();
         }
 
+        ViewData["likes"] = filme.likes;
+        ViewData["dislikes"] = filme.dislikes;
+        
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
         bool filmeGuardado = false;
@@ -215,4 +218,5 @@ public class FilmeController : Controller
         ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
+    
 }
