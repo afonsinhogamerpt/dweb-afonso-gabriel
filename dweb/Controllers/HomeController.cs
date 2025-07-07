@@ -33,10 +33,10 @@ public class HomeController : BaseController
         return View();
     }
     
-
     public IActionResult Pesquisar(int? generoId, string search,string query, int page = 1)
     {
-        ViewData["SearchTerm"] = query.IsNullOrEmpty() ? "" : query;
+        string filmepesquisa = !string.IsNullOrEmpty(query) ? query : search;
+        ViewData["SearchTerm"] = filmepesquisa ?? "";
         int pageSize = 6;
         var generos = _context.Genero.ToList();
         var filmesQuery = _context.Filme.Include(f => f.Genero).AsQueryable();
@@ -44,14 +44,14 @@ public class HomeController : BaseController
         {
             filmesQuery = filmesQuery.Where(f => f.Genero.Any(g => g.generoID == generoId));
         }
-        if (!string.IsNullOrEmpty(search))
+        if (!string.IsNullOrEmpty(filmepesquisa))
         {
-            filmesQuery = filmesQuery.Where(f => f.nome.Contains(search));
+            filmesQuery = filmesQuery.Where(f => f.nome.ToLower().Contains(filmepesquisa.ToLower()));
         }
         var filmes = filmesQuery.ToList();
         ViewBag.Generos = generos;
         ViewBag.SelectedGenero = generoId;
-        ViewBag.Search = search;
+        ViewBag.Search = filmepesquisa;
         ViewBag.Page = page;
         ViewBag.PageSize = pageSize;
         return View(filmes);
