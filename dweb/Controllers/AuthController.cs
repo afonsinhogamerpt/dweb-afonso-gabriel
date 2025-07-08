@@ -55,7 +55,7 @@ public class AuthController : BaseController
               return View(registo);
         }
         
-        var u = new Utilizador { UserName = registo.Email, Email = registo.Email, PhoneNumber = "919191919"};
+        var u = new Utilizador { UserName = registo.UserName, Email = registo.Email, NormalizedUserName = registo.UserName.ToUpper() };
         var result = await _userManager.CreateAsync(u, registo.Password);
 
         if (result.Succeeded)

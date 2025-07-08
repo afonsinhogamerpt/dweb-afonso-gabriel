@@ -20,6 +20,8 @@ public class AppDbContext : IdentityDbContext<Utilizador>
     
     public DbSet<Mensagem> Mensagem { get; set; }
     
+    public DbSet<FilmeUtilizador> FilmeUtilizador { get; set; }
+    
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +32,20 @@ public class AppDbContext : IdentityDbContext<Utilizador>
             .WithMany(u => u.Mensagem) 
             .HasForeignKey(m => m.UserID)
             .OnDelete(DeleteBehavior.Restrict); 
+        
+        modelBuilder.Entity<FilmeUtilizador>()
+            .HasKey(fu => new { fu.FilmeId, fu.UtilizadorId });
+
+        modelBuilder.Entity<FilmeUtilizador>()
+            .HasOne(fu => fu.Filme)
+            .WithMany(f => f.FilmeUtilizador)
+            .HasForeignKey(fu => fu.FilmeId);
+
+        modelBuilder.Entity<FilmeUtilizador>()
+            .HasOne(fu => fu.Utilizador)
+            .WithMany(u => u.FilmeUtilizador)
+            .HasForeignKey(fu => fu.UtilizadorId);
+       
     }
     
 }

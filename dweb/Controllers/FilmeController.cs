@@ -1,4 +1,5 @@
-﻿using dweb.Data;
+﻿using System.Security.Claims;
+using dweb.Data;
 using dweb.Models;
 using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -197,6 +198,7 @@ public class FilmeController : BaseController
 
         ViewData["likes"] = filme.likes;
         ViewData["dislikes"] = filme.dislikes;
+        ViewData["filmeID"] = filme.filmeID;
         
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
@@ -207,16 +209,21 @@ public class FilmeController : BaseController
             if (user != null)
             {
                 var utilizador = await _context.Utilizador
-                    .Include(u => u.Filmes)
+                    .Include(u => u.FilmeUtilizador)
                     .FirstOrDefaultAsync(u => u.Id == user.Id);
-                if (utilizador?.Filmes != null)
+                if (utilizador?.FilmeUtilizador != null)
                 {
-                    filmeGuardado = utilizador.Filmes.Any(f => f.filmeID == id);
+                    filmeGuardado = utilizador.FilmeUtilizador.Any(f => f.FilmeId == id);
                 }
             }
         }
         ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
+
+    
+    
+    
+    
     
 }

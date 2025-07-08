@@ -44,18 +44,29 @@ public class UserController : BaseController
         {
             return Unauthorized();
         }
+
         var filme = await _context.Filme.FindAsync(filmeId);
         if (filme == null)
         {
             return NotFound();
         }
-        if (user.Filmes == null)
-            user.Filmes = new List<Filme>();
-        if (!user.Filmes.Any(f => f.filmeID == filmeId))
+
+        
+        var existing = await _context.FilmeUtilizador
+            .FirstOrDefaultAsync(fu => fu.FilmeId == filmeId && fu.UtilizadorId == user.Id);
+
+        if (existing == null)
         {
-            user.Filmes.Add(filme);
+            var filmeUtilizador = new FilmeUtilizador
+            {
+                FilmeId = filmeId,
+                UtilizadorId = user.Id,
+            };
+
+            _context.FilmeUtilizador.Add(filmeUtilizador);
             await _context.SaveChangesAsync();
         }
+
         return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
     
@@ -63,17 +74,20 @@ public class UserController : BaseController
     public async Task<IActionResult> UserFilms()
     {
         var user = await _userManager.GetUserAsync(User);
-       if (user == null)
+        if (user == null)
         {
             return Unauthorized();
         }
-        var utilizadorComFilmes = _context.Utilizador
-            .Include(u => u.Filmes)
-            .FirstOrDefault(u => u.Id == user.Id);
 
-        var filmes = utilizadorComFilmes?.Filmes?.ToList() ?? new List<Filme>();
+        var filmes = await _context.FilmeUtilizador
+            .Where(fu => fu.UtilizadorId == user.Id)
+            .Include(fu => fu.Filme)
+            .Select(fu => fu.Filme)
+            .ToListAsync();
+
         return View(filmes);
     }
+    
     [HttpPost]
     public async Task<IActionResult> RetirarFilme(int filmeId)
     {
@@ -82,24 +96,16 @@ public class UserController : BaseController
         {
             return Unauthorized();
         }
-        
-        var utilizadorComFilmes = _context.Utilizador
-            .Include(u => u.Filmes)
-            .FirstOrDefault(u => u.Id == user.Id);
-        if (utilizadorComFilmes == null)
+
+        var relacao = await _context.FilmeUtilizador
+            .FirstOrDefaultAsync(f => f.FilmeId == filmeId && f.UtilizadorId == user.Id);
+
+        if (relacao != null)
         {
-            return Unauthorized();
-        }
-        var filme = await _context.Filme.FindAsync(filmeId);
-        if (filme == null)
-        {
-            return NotFound();
-        }
-        if (utilizadorComFilmes.Filmes != null && utilizadorComFilmes.Filmes.Any(f => f.filmeID == filmeId))
-        {
-            utilizadorComFilmes.Filmes.Remove(filme);
+            _context.FilmeUtilizador.Remove(relacao);
             await _context.SaveChangesAsync();
         }
+
         return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
 }

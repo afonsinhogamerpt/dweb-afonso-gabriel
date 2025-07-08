@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Models;
@@ -18,10 +19,12 @@ public class Filme
     
     public int dislikes { get; set; }
     
-    public ICollection<Utilizador> Utilizador { get; set; } = new List<Utilizador>();
+    [JsonIgnore]
+    public ICollection<FilmeUtilizador> FilmeUtilizador { get; set; }
     public ICollection<Actor> Actor { get; set; } = new List<Actor>();
     public ICollection<Review> ?FKReview { get; set; }
     public ICollection<Genero> Genero { get; set; } = new List<Genero>();
     public ICollection<Director> Director { get; set; } = new List<Director>();
+    
 
 }
