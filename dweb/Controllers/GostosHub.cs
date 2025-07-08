@@ -5,16 +5,9 @@ namespace dweb.Controllers;
 
 public class GostosHub : Hub
 {
-    private readonly AppDbContext _context;
     
-    
-    public GostosHub(AppDbContext context) {
-        _context = context;
-        
-    }
-    
-    public async Task SendMessage(string message)
+    public async Task SendMessage(int movieId, int likes, int dislikes)
     {
-        
+        Clients.All.SendAsync("ReceiveMessage", movieId, likes, dislikes);
     }
 }

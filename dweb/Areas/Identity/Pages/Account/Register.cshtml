@@ -1,7 +1,7 @@
 ﻿@page
 @model dweb.Models.DTOs.RegistoDTO
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registo";
 }
 
 <div class="d-flex flex-column justify-content-center align-items-center">
@@ -14,6 +14,13 @@
             <hr />
 
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+
+            <div class="form-floating mb-3">
+                <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="" />
+                <label asp-for="UserName">Nome de Utilizador</label>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
             
 
             <div class="form-floating mb-3">

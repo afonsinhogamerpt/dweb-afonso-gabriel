@@ -24,19 +24,20 @@ public class UtilizadorController : BaseController
     public async Task<ActionResult<IEnumerable<UtilizadorDTO>>> GetUtilizadores()
     {
         var utilizadores = await _context.Utilizador
-            .Include(u => u.Filmes)
+            .Include(u => u.FilmeUtilizador)
+            .ThenInclude(fu => fu.Filme)
             .Select(u => new UtilizadorDTO
             {
                 Id = u.Id,
                 Email = u.Email,
                 Imagem = u.Imagem,
-                Filmes = u.Filmes.Select(f => new FilmeDTO
+                Filmes = u.FilmeUtilizador.Select(f => new FilmeDTO
                 {
-                    filmeID = f.filmeID,
-                    nome = f.nome,
-                    resumo = f.resumo,
-                    imagem = f.imagem,
-                    ano = f.ano
+                    filmeID = f.Filme.filmeID,
+                    nome = f.Filme.nome,
+                    resumo = f.Filme.resumo,
+                    imagem = f.Filme.imagem,
+                    ano = f.Filme.ano
                 }).ToList()
             })
             .ToListAsync();

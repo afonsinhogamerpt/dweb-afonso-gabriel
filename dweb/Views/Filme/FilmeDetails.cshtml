@@ -60,26 +60,79 @@
                     </form>
                 }
             }
-            <form method="post" asp-action="" asp-controller="Filme">
-                <div class=" col-md-2">
+
+            <div class="col-md-2">
+                <form asp-action="Like" asp-controller="Like" method="post">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
                     <div id="rates1" class="d-flex mt-4">
-                        <a><img style="width: 60px; height: 60px; cursor:pointer;" src="@Url.Content("~/images/heart.jpg")"/></a> <div style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">@ViewData["likes"]</div>
-
+                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/heart.jpg")" />
+                        </button>
+                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
+                            @ViewData["likes"]
+                        </div>
                     </div>
+                </form>
 
-                    <div id="rates2" class="d-flex mt-4">
-                        <a><img style="width: 60px; height: 60px; cursor:pointer;" src="@Url.Content("~/images/dislike.jpg")"/></a> <div style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">@ViewData["dislikes"]</div>
+
+                <form asp-action="Dislike" asp-controller="Like" method="post">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <div id="rates1" class="d-flex mt-4">
+                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/dislike.jpg")" />
+                        </button>
+                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
+                            @ViewData["dislikes"]
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+                
+            </div>
+          
             
             
         </div>
     </div>
 </div>
 
-<style>
-    .rates .img{
-        
-    }
-</style>
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+
+        likeBtn?.addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            const filmeID = likeBtn.getAttribute('data-filmeid');
+
+            try {
+                const response = await fetch('/api/Filme/Like', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filmeID: parseInt(filmeID) })
+                });
+
+                if (response.status === 401) {
+                    window.location.href = "/Identity/Account/Login";
+                    return;
+                }
+
+                if (!response.ok) {
+                    const msg = await response.text();
+                    console.error("Resposta do servidor:", msg);
+                    alert("Erro: " + (msg || response.statusText));
+                    return;
+                }
+
+                const data = await response.json();
+                likeCount.textContent = data.likes;
+                likeBtn.querySelector('img').style.opacity = 0.5;
+                likeBtn.style.pointerEvents = "none"; 
+            } catch (err) {
+                console.error("Erro ao dar like:", err);
+            }
+        });
+    });
+</script> --> 
