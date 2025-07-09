@@ -182,7 +182,7 @@ public class FilmeController : BaseController
         await _context.SaveChangesAsync();
         return Ok("Filme removido com sucesso!");
     }
-
+    
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]
     public async Task<IActionResult> FilmeDetails(int id)
@@ -191,6 +191,7 @@ public class FilmeController : BaseController
             .Include(f => f.Actor)
             .Include(f => f.Director)
             .FirstOrDefault(f => f.filmeID == id);
+        
         if (filme == null)
         {
             return NotFound();
@@ -208,22 +209,11 @@ public class FilmeController : BaseController
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
-                var utilizador = await _context.Utilizador
-                    .Include(u => u.FilmeUtilizador)
-                    .FirstOrDefaultAsync(u => u.Id == user.Id);
-                if (utilizador?.FilmeUtilizador != null)
-                {
-                    filmeGuardado = utilizador.FilmeUtilizador.Any(f => f.FilmeId == id);
-                }
+                filmeGuardado = await _context.FilmeUtilizador
+                    .AnyAsync(fu => fu.FilmeId == id && fu.UtilizadorId == user.Id && fu.IsGuardado);
             }
         }
         ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
-
-    
-    
-    
-    
-    
 }
