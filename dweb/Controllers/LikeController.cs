@@ -28,19 +28,17 @@ public class LikeController : BaseController
         {
             return Redirect("/Identity/Account/Login");
         }
-
         var filme = await _context.Filme.FirstOrDefaultAsync(f => f.filmeID == like.filmeID);
         if (filme == null)
         {
             return NotFound();
         }
-
         var reacao = await _context.FilmeUtilizador
             .FirstOrDefaultAsync(fu => fu.FilmeId == filme.filmeID && fu.UtilizadorId == userID);
 
         if (reacao != null)
         {
-            if (reacao.IsLike == true)
+            if (reacao.IsLike)
             {
                 filme.likes--;
                 _context.FilmeUtilizador.Remove(reacao);
@@ -84,7 +82,7 @@ public class LikeController : BaseController
         {
             return NotFound();
         }
-
+        
         var reacao = await _context.FilmeUtilizador
             .FirstOrDefaultAsync(fu => fu.FilmeId == filme.filmeID && fu.UtilizadorId == userID);
 
@@ -118,8 +116,4 @@ public class LikeController : BaseController
 
         return Redirect($"/Filme/FilmeDetails/{filme.filmeID}");
     }
-
-    
-    
-    
 }

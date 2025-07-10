@@ -9,4 +9,7 @@ public class FilmeUtilizador
     public Filme Filme { get; set; }
 
     public bool IsLike { get; set; }
+    
+    public bool IsGuardado { get; set; }
+    
 }

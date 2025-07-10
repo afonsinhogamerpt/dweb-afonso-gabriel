@@ -40,18 +40,11 @@ public class UserController : BaseController
     public async Task<IActionResult> GuardarFilme(int filmeId)
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return Unauthorized();
-        }
+        if (user == null) return Unauthorized();
 
         var filme = await _context.Filme.FindAsync(filmeId);
-        if (filme == null)
-        {
-            return NotFound();
-        }
+        if (filme == null) return NotFound();
 
-        
         var existing = await _context.FilmeUtilizador
             .FirstOrDefaultAsync(fu => fu.FilmeId == filmeId && fu.UtilizadorId == user.Id);
 
@@ -61,11 +54,19 @@ public class UserController : BaseController
             {
                 FilmeId = filmeId,
                 UtilizadorId = user.Id,
+                IsGuardado = true,
+                IsLike = false
             };
 
             _context.FilmeUtilizador.Add(filmeUtilizador);
-            await _context.SaveChangesAsync();
         }
+        else if (!existing.IsGuardado)
+        {
+            existing.IsGuardado = true;
+            _context.FilmeUtilizador.Update(existing);
+        }
+
+        await _context.SaveChangesAsync();
 
         return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
