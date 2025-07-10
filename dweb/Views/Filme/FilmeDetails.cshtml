@@ -43,6 +43,29 @@
                 }
             </p>
             <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
+            @if (User.IsInRole("Administrador"))
+            {
+                <form asp-action="UpdateFilme" asp-controller="Filme" method="post" enctype="multipart/form-data" class="mt-3">
+                    <input type="hidden" asp-for="filmeID" />
+                    <div class="mb-2">
+                        <label for="nome<">Nome</label>
+                        <input type="text" asp-for="nome" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="ano">Ano</label>
+                        <input type="number" asp-for="ano" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="resumo">Resumo</label>
+                        <textarea asp-for="resumo" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+                <form asp-action="DeleteFilme" asp-controller="Filme" method="post" class="mt-2">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            }
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 if (ViewBag.FilmeGuardado == true)

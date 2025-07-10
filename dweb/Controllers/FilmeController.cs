@@ -8,12 +8,49 @@ using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
+    [Route("api/[controller]")]
+    [ApiController]
 public class FilmeController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
+
+    [HttpGet]
+    [Route("/Filme/Films")]
+    public IActionResult Films()
+    {
+        var filmes = _context.Filme.Include(f => f.Actor).Include(f => f.Director).ToList();
+        return View("Films", filmes);
+    }
+
+    [HttpPost("update-filme")]
+    public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano)
+    {
+        var f = _context.Filme.FirstOrDefault(x => x.filmeID == filmeID);
+        if (f == null)
+        {
+            return NotFound();
+        }
+        f.nome = nome;
+        f.resumo = resumo;
+        f.ano = ano;
+        await _context.SaveChangesAsync();
+        return RedirectToAction("FilmeDetails", new { id = filmeID });
+    }
+
+    [HttpPost("create-filme")]
+    public async Task<IActionResult> CreateFilme([FromForm] string nome, [FromForm] string resumo, [FromForm] int ano)
+    {
+        var filme = new Filme
+        {
+            nome = nome,
+            resumo = resumo,
+            ano = ano
+        };
+        _context.Filme.Add(filme);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Films");
+    }
 
     public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
@@ -40,15 +77,15 @@ public class FilmeController : BaseController
                     generoID = g.generoID,
                     nome = g.nome
                 }).ToList(),
-                
+
                 directores = f.Director.Select(g => new DirectorDTO
                 {
                     directorID = g.directorID,
                     nome = g.nome,
-                    idade = g.idade, 
-                    bio = g.bio,  
+                    idade = g.idade,
+                    bio = g.bio,
                     imagem = g.imagem,
-                        
+
                 }).ToList(),
                 actores = f.Actor.Select(a => new ActorDTO
                 {
@@ -67,7 +104,7 @@ public class FilmeController : BaseController
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilme(int id)
     {
-        var filme = _context.Filme 
+        var filme = _context.Filme
             .Include(f => f.Genero)
             .Include(f => f.Director)
             .Include(f => f.Actor).
@@ -83,15 +120,15 @@ public class FilmeController : BaseController
                     generoID = g.generoID,
                     nome = g.nome
                 }).ToList(),
-                
+
                 directores = f.Director.Select(g => new DirectorDTO
                 {
                     directorID = g.directorID,
                     nome = g.nome,
-                    idade = g.idade, 
-                    bio = g.bio,  
+                    idade = g.idade,
+                    bio = g.bio,
                     imagem = g.imagem,
-                        
+
                 }).ToList(),
                 actores = f.Actor.Select(a => new ActorDTO
                 {
@@ -102,14 +139,14 @@ public class FilmeController : BaseController
                     imagem = a.imagem
                 }).ToList()
             }).
-            Where(f => f.filmeID == id). 
+            Where(f => f.filmeID == id).
             FirstOrDefault();
 
         if (filme == null)
         {
             return NotFound();
         }
-        
+
         return Ok(filme);
     }
 
@@ -120,7 +157,7 @@ public class FilmeController : BaseController
         var generos = await _context.Genero.Where(g => createMovieDTO.generos.Contains(g.generoID)).ToListAsync();
         var directores = await _context.Director.Where(d => createMovieDTO.directores.Contains(d.directorID)).ToListAsync();
         var actores = await _context.Actor.Where(a => createMovieDTO.actores.Contains(a.actorID)).ToListAsync();
-        
+
         var filme = new Filme
         {
             nome = createMovieDTO.nome,
@@ -131,7 +168,7 @@ public class FilmeController : BaseController
             Director = directores,
             Actor = actores,
         };
-        
+
         var response = new MovieDTO
         {
             nome = filme.nome,
@@ -142,36 +179,36 @@ public class FilmeController : BaseController
             Directores = directores.Select(d => d.directorID).ToList(),
             Actores = actores.Select(a => a.actorID).ToList(),
         };
-        
+
         _context.Filme.Add(filme);
         await _context.SaveChangesAsync();
         return Ok(response);
-        
+
     }
 
     [HttpPut]
     public async Task<ActionResult<Filme>> PutFilme(Filme filme)
     {
         var f = _context.Filme.
-            Where(f => f.filmeID == filme.filmeID). 
+            Where(f => f.filmeID == filme.filmeID).
             FirstOrDefault();
 
         if (f is not Filme)
         {
             return NotFound();
         }
-        
+
         f.nome = filme.nome;
         f.resumo = filme.resumo;
         await _context.SaveChangesAsync();
         return Ok(filme);
     }
 
-    [HttpDelete]
-    public async Task<ActionResult<Filme>> DeleteFilme([FromBody] int id)
+    [HttpPost("delete_film")]
+    public async Task<ActionResult<Filme>> DeleteFilme([FromForm] int filmeID)
     {
-        var f = _context.Filme. 
-            Where(f => f.filmeID == id). 
+        var f = _context.Filme.
+            Where(f => f.filmeID == filmeID).
             FirstOrDefault();
 
         if (f == null)
@@ -180,7 +217,7 @@ public class FilmeController : BaseController
         }
         _context.Filme.Remove(f);
         await _context.SaveChangesAsync();
-        return Ok("Filme removido com sucesso!");
+        return RedirectToAction("Films");
     }
 
     [HttpGet]
@@ -199,7 +236,7 @@ public class FilmeController : BaseController
         ViewData["likes"] = filme.likes;
         ViewData["dislikes"] = filme.dislikes;
         ViewData["filmeID"] = filme.filmeID;
-        
+
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
         bool filmeGuardado = false;
@@ -221,9 +258,9 @@ public class FilmeController : BaseController
         return View(filme);
     }
 
-    
-    
-    
-    
-    
+
+
+
+
+
 }
