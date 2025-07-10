@@ -48,12 +48,36 @@
                             <img src='@Url.Content("~/images/placeholder_user.jpg")' class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login" />
                         }
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" asp-controller="User" asp-action="Update">User Update</a></li>
-                        <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
-                    </ul>
+                    
+                    @if (!User.IsInRole("Administrador"))
+                    {
+                        
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <strong><li><p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Users">Utilizadores</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Filmes</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Actores</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Directores</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Actores</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Géneros</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Mensagens</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+                        </ul>
+               
+                    }
+                    else if (1==1)
+                    {
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <strong><li><p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Update">Os teus dados</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+                        </ul>
+                    }
+                    
+                    
                 </div>
             }
             else

@@ -26,6 +26,7 @@ public class BaseController : Controller
                     ? $"data:image/png;base64,{Convert.ToBase64String(user.Imagem)}"
                     : null;
                 ViewData["UserId"] = user.Id;
+                ViewData["UserName"] = user.UserName;
             }
         }
 
