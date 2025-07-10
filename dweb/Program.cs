@@ -40,14 +40,43 @@ app.MapHub<ChatHub>("/chathub");
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Utilizador>>();
 
-    string[] roles = { "Administrador" };
+    string[] roles = { "Administrador", "autenticado" };
 
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+
+    string adminEmail = "admin@filmly.com";
+    string adminUserName = "admin";
+    string adminPassword = "Admin123@"; 
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        var user = new Utilizador
+        {
+            UserName = adminUserName,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        var result = await userManager.CreateAsync(user, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, "Administrador");
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(adminUser, "Administrador"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Administrador");
         }
     }
 }

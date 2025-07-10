@@ -60,6 +60,7 @@ public class AuthController : BaseController
 
         if (result.Succeeded)
         {
+            await _userManager.AddToRoleAsync(u, "autenticado");
             return Redirect("/Identity/Account/Login");
         }
 
