@@ -5,13 +5,37 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
-            <img src="@Model.imagem" class="img-fluid rounded shadow" alt="Imagem do Director" />
+            <img src="@Model.imagem" class="img-fluid rounded shadow" alt="Imagem do Actor" />
         </div>
         <div class="col-md-8">
             <h2>@Model.nome</h2>
             <p><strong>Idade:</strong> @Model.idade</p>
             <p><strong>Biografia:</strong> @Model.bio</p>
-            <a href="javascript:history.back()" class="btn btn-secondary mt-3">Voltar</a>
+            <a href="javascript:history.back()" class="btn btn-secondary mt-3">Voltar</a>     
+            @if (User.IsInRole("Administrador"))
+            {
+                <form asp-action="UpdateActor" asp-controller="Actor" method="post" enctype="multipart/form-data" class="mt-3">
+                    <input type="hidden" asp-for="actorID" />
+                    <div class="mb-2">
+                        <label for="nome">Nome</label>
+                        <input type="text" asp-for="nome" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="idade">Idade</label>
+                        <input type="number" asp-for="idade" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="bio">Biografia</label>
+                        <textarea asp-for="bio" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+                <form asp-action="DeleteActor" asp-controller="Actor" method="post" class="mt-2">
+                    <input type="hidden" name="actorID" value="@Model.actorID" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            }
         </div>
     </div>
 </div>
+
