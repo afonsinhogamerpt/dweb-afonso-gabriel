@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace dweb.Models.DTOs;
 
@@ -12,4 +13,7 @@ public class RegistoDTO
     public string Password { get; set; }
     
     public string ConfirmPassword { get; set; }
+    
+    [Required(ErrorMessage = "É necessário introduzir um nome de utilizador para efetuar o registo")]
+    public string UserName { get; set; }
 }

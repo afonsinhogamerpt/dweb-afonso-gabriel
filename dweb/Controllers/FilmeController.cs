@@ -1,20 +1,24 @@
-﻿using dweb.Data;
+﻿using System.Security.Claims;
+using dweb.Data;
 using dweb.Models;
 using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FilmeController : Controller
+public class FilmeController : BaseController
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<Utilizador> _userManager;
 
-    public FilmeController(AppDbContext context)
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     [HttpGet]
@@ -178,17 +182,38 @@ public class FilmeController : Controller
         await _context.SaveChangesAsync();
         return Ok("Filme removido com sucesso!");
     }
-
-    // Action para exibir detalhes do filme
+    
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]
-    public IActionResult FilmeDetails(int id)
+    public async Task<IActionResult> FilmeDetails(int id)
     {
-        var filme = _context.Filme.FirstOrDefault(f => f.filmeID == id);
+        var filme = _context.Filme
+            .Include(f => f.Actor)
+            .Include(f => f.Director)
+            .FirstOrDefault(f => f.filmeID == id);
+        
         if (filme == null)
         {
             return NotFound();
         }
+
+        ViewData["likes"] = filme.likes;
+        ViewData["dislikes"] = filme.dislikes;
+        ViewData["filmeID"] = filme.filmeID;
+        
+        ViewBag.Directores = filme.Director.ToList();
+        ViewBag.Actores = filme.Actor.ToList();
+        bool filmeGuardado = false;
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                filmeGuardado = await _context.FilmeUtilizador
+                    .AnyAsync(fu => fu.FilmeId == id && fu.UtilizadorId == user.Id && fu.IsGuardado);
+            }
+        }
+        ViewBag.FilmeGuardado = filmeGuardado;
         return View(filme);
     }
 }

@@ -1,27 +1,46 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UtilizadorController : Controller
+public class UtilizadorController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
 
-    public UtilizadorController(AppDbContext context, UserManager<Utilizador> userManager)
+    public UtilizadorController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
     {
         _context = context;
         _userManager = userManager;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Utilizador>>> GetUtilizadores()
+    public async Task<ActionResult<IEnumerable<UtilizadorDTO>>> GetUtilizadores()
     {
-        var utilizadores = _context.Utilizador.ToList();
+        var utilizadores = await _context.Utilizador
+            .Include(u => u.FilmeUtilizador)
+            .ThenInclude(fu => fu.Filme)
+            .Select(u => new UtilizadorDTO
+            {
+                Id = u.Id,
+                Email = u.Email,
+                Imagem = u.Imagem,
+                Filmes = u.FilmeUtilizador.Select(f => new FilmeDTO
+                {
+                    filmeID = f.Filme.filmeID,
+                    nome = f.Filme.nome,
+                    resumo = f.Filme.resumo,
+                    imagem = f.Filme.imagem,
+                    ano = f.Filme.ano
+                }).ToList()
+            })
+            .ToListAsync();
         return Ok(utilizadores);
     }
 
@@ -40,7 +59,7 @@ public class UtilizadorController : Controller
     }
     
     [HttpPost("update-utilizador")]
-    public async Task<IActionResult> UpdateDados([FromForm] Utilizador model)
+    public async Task<IActionResult> UpdateDados([FromForm] Utilizador model, IFormFile? file)
     {
         var user = await _userManager.FindByIdAsync(model.Id);
         if (user == null)
@@ -51,6 +70,13 @@ public class UtilizadorController : Controller
         user.UserName = model.UserName;
         user.Email = model.Email;
         user.Imagem = model.Imagem;
+
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            user.Imagem = memoryStream.ToArray();
+        }
 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)

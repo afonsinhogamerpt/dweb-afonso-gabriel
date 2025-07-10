@@ -6,12 +6,12 @@ namespace dweb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class GeneroController : Controller
+public class GeneroController : BaseController
 {
     
     private readonly AppDbContext _context;
 
-    public GeneroController(AppDbContext context)
+    public GeneroController(AppDbContext context) : base(context)
     {
         _context = context;
     }

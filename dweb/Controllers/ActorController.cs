@@ -7,12 +7,12 @@ namespace dweb.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 
-public class ActorController : Controller
+public class ActorController : BaseController
 {
     
     private readonly AppDbContext _context;
 
-    public ActorController(AppDbContext context)
+    public ActorController(AppDbContext context) : base(context)
     {
         _context = context;
     }
@@ -35,6 +35,18 @@ public class ActorController : Controller
             return Ok(actor);
         }
         return NotFound();
+    }
+
+    [HttpGet]
+    [Route("/Actor/ActorDetails/{id}")]
+    public IActionResult ActorDetails(int id)
+    {
+        var actor = _context.Actor.FirstOrDefault(a => a.actorID == id);
+        if (actor == null)
+        {
+            return NotFound();
+        }
+        return View(actor);
     }
     
     [HttpPost]

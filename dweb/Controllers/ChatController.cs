@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dweb.Controllers;
 
-public class ChatController : Controller
+public class ChatController : BaseController
 {
     
     private readonly AppDbContext _context;
-    public ChatController(AppDbContext context)
+    public ChatController(AppDbContext context) : base(context)
     {
         _context = context;
     }
@@ -25,7 +25,6 @@ public class ChatController : Controller
         
         var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
-       
         
         //return Ok(userId);
         ViewData["UserID"] = userId;

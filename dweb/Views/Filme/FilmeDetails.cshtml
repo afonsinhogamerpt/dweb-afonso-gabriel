@@ -1,16 +1,97 @@
 @model dweb.Models.Filme
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Detalhes do Filme";
+    var returnUrl = HttpContextAccessor.HttpContext?.Request.Headers["Referer"].ToString();
+    var actores = ViewBag.Actores as List<Actor>;
+    var directores = ViewBag.Directores as List<Director>;
 }
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
-            <img src="@Model.imagem" class="img-fluid rounded shadow" alt="Imagem do Filme" />
+            <img src="@(string.IsNullOrEmpty(Model.imagem) ? Url.Content("~/images/placeholder.svg") : Model.imagem)"  class="img-fluid rounded shadow" alt="Imagem do Filme" />
         </div>
         <div class="col-md-8">
             <h2>@Model.nome (@Model.ano)</h2>
             <p><strong>Resumo:</strong> @Model.resumo</p>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary mt-3">Voltar</a>
+            <p>
+                <strong>Actores:</strong>
+                @if (actores != null && actores.Any())
+                {
+                    foreach (var actor in actores)
+                    {
+                        <a href="@Url.Action("ActorDetails", "Actor", new { id = actor.actorID })">@actor.nome</a>@(actor != actores.Last() ? ", " : "")
+                    }
+                }
+                else
+                {
+                    <span>Nenhum actor registado.</span>
+                }
+            </p>
+            <p>
+                <strong>Directores:</strong>
+                @if (directores != null && directores.Any())
+                {
+                    foreach (var director in directores)
+                    {
+                        <a href="@Url.Action("DirectorDetails", "Director", new { id = director.directorID })">@director.nome</a>@(director != directores.Last() ? ", " : "")
+                    }
+                }
+                else
+                {
+                    <span>Nenhum director registado.</span>
+                }
+            </p>
+            <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (ViewBag.FilmeGuardado == true)
+                {
+                    <form asp-controller="User" asp-action="RetirarFilme" method="post" style="display:inline">
+                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                        <button type="submit" class="btn btn-danger mt-3">Retirar</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="User" asp-action="GuardarFilme" method="post" style="display:inline">
+                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                        <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+                    </form>
+                }
+            }
+
+            <div class="col-md-2">
+                <form asp-action="Like" asp-controller="Like" method="post">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <div id="rates1" class="d-flex mt-4">
+                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/heart.jpg")" />
+                        </button>
+                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
+                            @ViewData["likes"]
+                        </div>
+                    </div>
+                </form>
+
+
+                <form asp-action="Dislike" asp-controller="Like" method="post">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <div id="rates1" class="d-flex mt-4">
+                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/dislike.jpg")" />
+                        </button>
+                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
+                            @ViewData["dislikes"]
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+          
+            
+            
         </div>
     </div>
 </div>
+
