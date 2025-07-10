@@ -18,22 +18,33 @@ public class UserController : BaseController
         _context = context;
     }
    
-    public IActionResult Index()
+    public IActionResult Users()
     {
         return View();
     }
     
-    public async Task<IActionResult> Update()
+    public async Task<IActionResult> Update(string id)
     {
-        var user = await _userManager.GetUserAsync(User);
+        Utilizador utilizador;
 
-        
-        if (user is not Utilizador utilizador)
+        if (!string.IsNullOrEmpty(id))
+        {
+            utilizador = await _userManager.FindByIdAsync(id);
+            if (utilizador == null)
+              {
+                  return RedirectToAction("Login", "Account");
+              }
+            return View(utilizador);
+        }
+        utilizador = await _userManager.GetUserAsync(User);
+
+        if (utilizador == null)
         {
             return RedirectToAction("Login", "Account");
         }
-
-        return View(utilizador); 
+        
+        return View(utilizador);
+        
     }
 
     [HttpPost]

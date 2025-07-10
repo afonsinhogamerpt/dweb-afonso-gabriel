@@ -109,7 +109,6 @@ public class UtilizadorController : BaseController
     [HttpPost]
     public async Task<IActionResult> PostUtilizador(Utilizador utilizador)
     {
-        
         _context.Utilizador.Add(utilizador);
         await _context.SaveChangesAsync();
         return Ok(utilizador);

@@ -58,9 +58,13 @@ public class AuthController : BaseController
         var u = new Utilizador { UserName = registo.UserName, Email = registo.Email, NormalizedUserName = registo.UserName.ToUpper() };
         var result = await _userManager.CreateAsync(u, registo.Password);
 
-        if (result.Succeeded)
+        if (result.Succeeded && !User.Identity.IsAuthenticated)
         {
             return Redirect("/Identity/Account/Login");
+        }
+        else
+        {
+            return Redirect("/User/Users");
         }
 
         var errors = result.Errors.Select(e => e.Description);
