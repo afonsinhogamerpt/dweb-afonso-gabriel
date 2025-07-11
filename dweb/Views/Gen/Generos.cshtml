@@ -1,0 +1,119 @@
+﻿@model dweb.Models.Genero
+
+@{
+
+}
+
+<div class="d-flex justify-content-center mt-4">
+    <h2>Géneros</h2>
+</div>
+
+@*lista de géneros e formulário de criação dos mesmos*@
+<div class="d-flex justify-content-between p-4" style="gap: 2rem;">
+    <div style="flex: 1;">
+        <h4>Géneros</h4>
+
+        <div id="generos-container"
+             data-bs-spy="scroll"
+             data-bs-target="#navbar-example2"
+             data-bs-offset="0"
+             class="scrollspy-example border p-3"
+             style="height: 400px; overflow-y: auto;"
+             tabindex="0">
+        </div>
+    </div>
+
+    <div style="flex: 1;">
+        <div class="d-flex justify-content-center">
+            <h4>Criar Novo Género</h4>
+        </div>
+
+        <form asp-action="PostGeneroForm" asp-controller="Genero" method="post">
+            <div class="form-floating mb-3">
+                <input asp-for="nome" class="form-control" autocomplete="username" placeholder=""/>
+                <label asp-for="nome">Género</label>
+                <span asp-validation-for="nome" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center">
+                <button style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" type="submit" class="btn btn-primary ">Criar Género</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="editGeneroModal" tabindex="-1" aria-labelledby="editGeneroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form asp-controller="Gen" asp-action="PutGeneroForm" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGeneroModalLabel">Atualizar Género</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editGeneroId" name="generoID" value="" />
+
+                <div class="mb-3">
+                    <label for="editGeneroNome" class="form-label">Género</label>
+                    <input type="text" class="form-control" id="editGeneroNome" name="Nome" value="" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-warning">Guardar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const container = document.getElementById("generos-container");
+
+        try {
+            const response = await fetch('/api/Genero');
+            const generos = await response.json();
+
+            container.innerHTML = '';
+
+            generos.forEach(g => {
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <div class="d-flex align-items-center border p-2 mb-2 rounded" style="gap: 1rem;">
+                        <div style="flex: 1;">
+                            <p class="m-0"><strong>${g.nome}</strong></p>
+                        </div>
+                        <div style="flex: 1;" class="d-flex justify-content-center">
+                            <!-- Botão só para abrir modal -->
+                            <button
+                                type="button"
+                                class="btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editGeneroModal"
+                                onclick='setGeneroModal("${g.generoID}", "${g.nome}")'
+                                style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">
+                                Atualizar
+                            </button>
+                        </div>
+                        <div style="flex: 1;" class="d-flex justify-content-center">
+                            <form action="/Gen/DeleteGeneroForm" method="post">
+                                <input type="hidden" name="id" value="${g.generoID}"/>
+                                <button class="btn" style="background: linear-gradient(90deg,#e74c3c,#e67e22); color:white; border:none; font-weight:600;" type="submit">
+                                    Apagar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        } catch (error) {
+            container.innerHTML = "<p>Erro ao carregar dados.</p>";
+        }
+    });
+
+    function setGeneroModal(id, nome) {
+        document.getElementById('editGeneroId').value = id;
+        document.getElementById('editGeneroNome').value = nome;
+    }
+</script>

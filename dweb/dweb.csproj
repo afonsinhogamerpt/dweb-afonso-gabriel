@@ -24,4 +24,8 @@
       <_ContentIncludedByDefault Remove="Views\Auth\Registo.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

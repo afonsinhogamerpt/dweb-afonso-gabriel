@@ -16,7 +16,6 @@ public class AppDbContext : IdentityDbContext<Utilizador>
     public DbSet<Actor> Actor { get; set; }
     public DbSet<Director> Director { get; set; }
     public DbSet<Genero> Genero { get; set; }
-    public DbSet<Review> Review { get; set; }
     
     public DbSet<Mensagem> Mensagem { get; set; }
     

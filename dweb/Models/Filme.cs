@@ -12,7 +12,7 @@ public class Filme
     public int filmeID { get; set; }
     public string nome { get; set; }
     public string resumo { get; set; }
-    public string imagem { get; set; }
+    public byte[]? imagem { get; set; }
     public int ano { get; set; }
     
     public int likes { get; set; }
@@ -22,7 +22,6 @@ public class Filme
     [JsonIgnore]
     public ICollection<FilmeUtilizador> FilmeUtilizador { get; set; }
     public ICollection<Actor> Actor { get; set; } = new List<Actor>();
-    public ICollection<Review> ?FKReview { get; set; }
     public ICollection<Genero> Genero { get; set; } = new List<Genero>();
     public ICollection<Director> Director { get; set; } = new List<Director>();
     

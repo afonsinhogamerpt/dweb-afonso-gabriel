@@ -5,6 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
+    <link rel="shortcut icon" href="@Url.Content("~/images/filmly.png")" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Filmly</title>
     <script type="importmap"></script>
@@ -16,10 +17,12 @@
 </head>
 <body style="background: #f8f9fa; min-height: 100vh;">
 <header>
+
+    @*Navbar*@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm shadow" style="background: linear-gradient(90deg,#2980b9,#6dd5fa); border-radius: 0 0 1.5rem 1.5rem;">
         <div class="container-fluid px-4">
             <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
-                <img src="@Url.Content("~/images/filmly.png")" style="height: 5vh; width: 3vw" />
+                <img src="@Url.Content("~/images/filmly.png")" style="height: 5vh; width: 3vw"/>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -34,33 +37,63 @@
                 </ul>
             </div>
 
-         
+
+            @*Se o utilizador estiver autenticado, aparição de uma dropdown *@
             @if (User.Identity.IsAuthenticated)
             {
                 <div class="dropdown" style="margin-right: 1vw;">
                     <button class="btn dropdown-toggle d-flex align-items-center p-0 border-0 bg-transparent" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none; color: white;">
                         @if (ViewData["UserImage"] != null)
                         {
-                            <img src="@ViewData["UserImage"]" class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="User Image" />
+                            <img src="@ViewData["UserImage"]" class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="User Image"/>
                         }
                         else
                         {
-                            <img src='@Url.Content("~/images/placeholder_user.jpg")' class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login" />
+                            <img src='@Url.Content("~/images/placeholder_user.jpg")' class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login"/>
                         }
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" asp-controller="User" asp-action="Update">User Update</a></li>
-                        <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
-                    </ul>
+
+                    @*Caso o user.role seja admin permite que apareça novas routes*@
+                    @if (User.IsInRole("Administrador"))
+                    {
+
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <strong>
+                                <li>
+                                    <p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Users">Utilizadores</a></li>
+                            <li><a class="dropdown-item" asp-controller="Filme" asp-action="Films">Filmes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Actor" asp-action="Actors">Actores</a></li>
+                            <li><a class="dropdown-item" asp-controller="Director" asp-action="Directors">Directores</a></li>
+                            <li><a class="dropdown-item" asp-controller="Gen" asp-action="Generos">Géneros</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Update">Os teus dados</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+                        </ul>
+
+                    }
+                    else
+                    {
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <strong>
+                                <li>
+                                    <p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Update">Os teus dados</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
+                        </ul>
+                    }
+
                 </div>
             }
             else
             {
                 <div class="d-flex align-items-center">
                     <a asp-controller="Auth" asp-action="Login">
-                        <img src="@Url.Content("~/images/placeholder_user.jpg")" class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login" />
+                        <img src="@Url.Content("~/images/placeholder_user.jpg")" class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login"/>
                     </a>
                 </div>
             }
@@ -68,7 +101,7 @@
     </nav>
 </header>
 <div class="container">
-    <main role="main" class="pb-3" style="min-height: 80vh;">
+    <main role="main" class="pb-5" style="min-height: 88vh; padding-bottom: 5rem !important;">
         @RenderBody()
     </main>
 </div>
