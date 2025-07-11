@@ -1,5 +1,6 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers;
@@ -16,6 +17,7 @@ public class DirectorController : BaseController
         _context = context;
     }
     
+    [Authorize (Roles = "Administrador")]
     [HttpGet]
     [Route("/Director/Directors")]
     public IActionResult Directors()

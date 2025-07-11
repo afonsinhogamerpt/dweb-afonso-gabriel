@@ -56,12 +56,13 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <strong><li><p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>
                             <li><a class="dropdown-item" asp-controller="User" asp-action="Users">Utilizadores</a></li>
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Filmes</a></li>
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Actores</a></li>
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Directores</a></li>
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Actores</a></li>
+                            <li><a class="dropdown-item" asp-controller="Filme" asp-action="Films">Filmes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Actor" asp-action="Actors">Actores</a></li>
+                            <li><a class="dropdown-item" asp-controller="Director" asp-action="Directors">Directores</a></li>
                             <li><a class="dropdown-item" asp-controller="Gen" asp-action="Generos" >Géneros</a></li>
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Mensagens</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Update">Os teus dados</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="UserFilms">Os teus filmes</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
                         </ul>

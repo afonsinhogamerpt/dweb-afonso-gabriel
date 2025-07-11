@@ -1,5 +1,6 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers;
@@ -13,6 +14,8 @@ public class GenController : BaseController
         _context = context;
     }
   
+    
+    [Authorize (Roles = "Administrador")]
     public IActionResult Generos()
     {
         return View();

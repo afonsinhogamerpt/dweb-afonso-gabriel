@@ -82,6 +82,22 @@
                 </select>
                 <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
             </div>
+            <div class="mb-3">
+                <label for="generosSelect" class="form-label">Géneros</label>
+                <select id="generosSelect" name="generos" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                    @{
+                        var generos = ViewBag.Generos as List<dweb.Models.Genero>;
+                        if (generos != null)
+                        {
+                            foreach (var genero in generos)
+                            {
+                                <option value="@genero.generoID">@genero.nome</option>
+                            }
+                        }
+                    }
+                </select>
+                <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
+            </div>
             <div class="form-floating mb-3">
                 <textarea class="form-control" placeholder="" name="resumo"></textarea>
                 <label>Resumo</label>

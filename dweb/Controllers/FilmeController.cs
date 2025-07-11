@@ -2,6 +2,7 @@
 using dweb.Data;
 using dweb.Models;
 using dweb.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,8 @@ public class FilmeController : BaseController
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
 
+    
+    [Authorize (Roles = "Administrador")]
     [HttpGet]
     [Route("/Filme/Films")]
     public IActionResult Films()
@@ -22,16 +25,19 @@ public class FilmeController : BaseController
         var filmes = _context.Filme.Include(f => f.Actor).Include(f => f.Director).ToList();
         var actors = _context.Actor.ToList();
         var directors = _context.Director.ToList();
+        var generos = _context.Genero.ToList();
         ViewBag.Actors = actors;
         ViewBag.Directors = directors;
+        ViewBag.Generos = generos;
         return View("Films", filmes);
     }
 
     [HttpPost("update-filme")]
     public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,
-        [FromForm] List<int> directores)
+        [FromForm] List<int> directores,
+        [FromForm] List<int> generos)
     {
-        var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).FirstOrDefault(x => x.filmeID == filmeID);
+        var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).Include(x => x.Genero).FirstOrDefault(x => x.filmeID == filmeID);
         
         if (f == null)
         {
@@ -47,6 +53,7 @@ public class FilmeController : BaseController
             var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
             foreach (var actor in selectedActores)
             {
+                _context.Actor.Attach(actor);
                 f.Actor.Add(actor);
             }
         }
@@ -56,7 +63,17 @@ public class FilmeController : BaseController
             var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
             foreach (var director in selectedDirectores)
             {
+                _context.Director.Attach(director);
                 f.Director.Add(director);
+            }
+        }
+        f.Genero.Clear();
+        if (generos != null && generos.Count > 0)
+        {
+            var selectedGeneros = await _context.Genero.Where(g => generos.Contains(g.generoID)).ToListAsync();
+            foreach (var genero in selectedGeneros)
+            {
+                f.Genero.Add(genero);
             }
         }
 
@@ -67,17 +84,20 @@ public class FilmeController : BaseController
     [HttpPost("create-filme")]
     public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,
         [FromForm] List<int> actores,
-        [FromForm] List<int> directores)
+        [FromForm] List<int> directores,
+        [FromForm] List<int> generos)
     {
         var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
         var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
+        var selectedGeneros = await _context.Genero.Where(g => generos.Contains(g.generoID)).ToListAsync();
         var filme = new Filme
         {
             nome = nome,
             resumo = resumo,
             ano = ano,
             Actor = selectedActores,
-            Director = selectedDirectores
+            Director = selectedDirectores,
+            Genero = selectedGeneros
         };
         _context.Filme.Add(filme);
         await _context.SaveChangesAsync();
@@ -272,11 +292,10 @@ public class FilmeController : BaseController
         
         var actors = _context.Actor.ToList();
         var directors = _context.Director.ToList();
+        var generos = _context.Genero.ToList();
         ViewBag.Actors = actors;
         ViewBag.Directors = directors;
-        
-        ViewBag.Directores = filme.Director.ToList();
-        ViewBag.Actores = filme.Actor.ToList();
+        ViewBag.Generos = generos;
         bool filmeGuardado = false;
         if (User.Identity?.IsAuthenticated == true)
         {

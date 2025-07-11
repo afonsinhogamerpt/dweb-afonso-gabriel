@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Detalhes do Filme";
     var returnUrl = HttpContextAccessor.HttpContext?.Request.Headers["Referer"].ToString();
-    var actores = ViewBag.Actores as List<Actor>;
-    var directores = ViewBag.Directores as List<Director>;
+    var actores = Model.Actor;
+    var directores = Model.Director;
 }
 <div class="container mt-5">
     <div class="row">
@@ -23,7 +23,7 @@
                         <a href="@Url.Action("ActorDetails", "Actor", new { id = actor.actorID })">@actor.nome</a>@(actor != actores.Last() ? ", " : "")
                     }
                 }
-                else
+                else 
                 {
                     <span>Nenhum actor registado.</span>
                 }
@@ -85,6 +85,22 @@
                                     foreach (var director in directors)
                                     {
                                         <option value="@director.directorID">@director.nome</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="generosSelect" class="form-label">Géneros</label>
+                        <select id="generosSelect" name="generos" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                            @{
+                                var generos = ViewBag.Generos as List<dweb.Models.Genero>;
+                                if (generos != null)
+                                {
+                                    foreach (var genero in generos)
+                                    {
+                                        <option value="@genero.generoID">@genero.nome</option>
                                     }
                                 }
                             }
