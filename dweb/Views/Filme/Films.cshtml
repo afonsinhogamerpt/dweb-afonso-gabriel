@@ -3,6 +3,7 @@
     ViewData["Title"] = "Filmes";
 }
 
+
 <div class="d-flex justify-content-center mt-4">
     <h2>Filmes</h2>
 </div>
@@ -11,6 +12,9 @@
     <div style="flex: 1;">
         <h4>Filmes</h4>
         <div id="filmes-container"
+             data-bs-spy="scroll"
+             data-bs-target="#navbar-example2"
+             data-bs-offset="0"
              class="scrollspy-example border p-3"
              style="height: 400px; overflow-y: auto;"
              tabindex="0">
@@ -19,9 +23,10 @@
                 foreach (var f in Model)
                 {
                     <div>
-                        <h3>@f.nome (@f.ano)</h3>
+                        <h3>@f.nome</h3>
+                        <span class="text-muted">@f.ano</span>
                         <a asp-action="FilmeDetails" asp-controller="Filme" asp-route-id="@f.filmeID" class="d-flex">
-                            <button type="button">Ir</button>
+                            <button type="button" class="btn btn-outline-primary btn-sm mt-2">Ir</button>
                         </a>
                     </div>
                 }
@@ -45,86 +50,38 @@
                 <input type="number" class="form-control" placeholder="" name="ano" />
                 <label>Ano</label>
             </div>
-            <div class="form-floating mb-3">
-                <label for="actorSelect">Atores</label>
-                <div class="input-group">
-                    <select id="actorSelect" class="form-control">
-                        @{
-                            var actors = ViewBag.Actors as List<dweb.Models.Actor>;
-                            if (actors != null)
+            <div class="mb-3">
+                <label for="actorSelect" class="form-label">Atores</label>
+                <select id="actorSelect" name="actores[]" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                    @{
+                        var actors = ViewBag.Actors as List<dweb.Models.Actor>;
+                        if (actors != null)
+                        {
+                            foreach (var actor in actors)
                             {
-                                foreach (var actor in actors)
-                                {
-                                    <option value="@actor.actorID">@actor.nome</option>
-                                }
+                                <option value="@actor.actorID">@actor.nome</option>
                             }
                         }
-                    </select>
-                    <button type="button" class="btn btn-outline-primary" id="addActorBtn">Adicionar</button>
-                </div>
-                <div id="selectedActorsBox" class="mt-2"></div>
+                    }
+                </select>
+                <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
             </div>
-            <div class="form-floating mb-3">
-                <label for="directorSelect">Diretores</label>
-                <div class="input-group">
-                    <select id="directorSelect" class="form-control">
-                        @{
-                            var directors = ViewBag.Directors as List<dweb.Models.Director>;
-                            if (directors != null)
+            <div class="mb-3">
+                <label for="directorSelect" class="form-label">Diretores</label>
+                <select id="directorSelect" name="directores[]" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                    @{
+                        var directors = ViewBag.Directors as List<dweb.Models.Director>;
+                        if (directors != null)
+                        {
+                            foreach (var director in directors)
                             {
-                                foreach (var director in directors)
-                                {
-                                    <option value="@director.directorID">@director.nome</option>
-                                }
+                                <option value="@director.directorID">@director.nome</option>
                             }
                         }
-                    </select>
-                    <button type="button" class="btn btn-outline-primary" id="addDirectorBtn">Adicionar</button>
-                </div>
-                <div id="selectedDirectorsBox" class="mt-2"></div>
+                    }
+                </select>
+                <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
             </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    let selectedActors = [];
-                    let selectedDirectors = [];
-                    const actorSelect = document.getElementById('actorSelect');
-                    const directorSelect = document.getElementById('directorSelect');
-                    const selectedActorsBox = document.getElementById('selectedActorsBox');
-                    const selectedDirectorsBox = document.getElementById('selectedDirectorsBox');
-                    const addActorBtn = document.getElementById('addActorBtn');
-                    const addDirectorBtn = document.getElementById('addDirectorBtn');
-
-                    addActorBtn.addEventListener('click', function() {
-                        const selectedOption = actorSelect.options[actorSelect.selectedIndex];
-                        if (selectedOption && !selectedActors.some(a => a.id == selectedOption.value)) {
-                            selectedActors.push({ id: selectedOption.value, nome: selectedOption.text });
-                            actorSelect.remove(actorSelect.selectedIndex);
-                            renderActors();
-                        }
-                    });
-                    addDirectorBtn.addEventListener('click', function() {
-                        const selectedOption = directorSelect.options[directorSelect.selectedIndex];
-                        if (selectedOption && !selectedDirectors.some(d => d.id == selectedOption.value)) {
-                            selectedDirectors.push({ id: selectedOption.value, nome: selectedOption.text });
-                            directorSelect.remove(directorSelect.selectedIndex);
-                            renderDirectors();
-                        }
-                    });
-
-                    function renderActors() {
-                        let html = selectedActors.length ?
-                            '<strong>Atores adicionados:</strong> ' + selectedActors.map(a => a.nome).join(', ') : '';
-                        html += selectedActors.map(a => `<input type="hidden" name="actores" value="${a.id}" />`).join('');
-                        selectedActorsBox.innerHTML = html;
-                    }
-                    function renderDirectors() {
-                        let html = selectedDirectors.length ?
-                            '<strong>Diretores adicionados:</strong> ' + selectedDirectors.map(d => d.nome).join(', ') : '';
-                        html += selectedDirectors.map(d => `<input type="hidden" name="directores" value="${d.id}" />`).join('');
-                        selectedDirectorsBox.innerHTML = html;
-                    }
-                });
-            </script>
             <div class="form-floating mb-3">
                 <textarea class="form-control" placeholder="" name="resumo"></textarea>
                 <label>Resumo</label>

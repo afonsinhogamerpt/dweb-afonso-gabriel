@@ -28,9 +28,10 @@ public class FilmeController : BaseController
     }
 
     [HttpPost("update-filme")]
-    public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano)
+    public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,
+        [FromForm] List<int> directores)
     {
-        var f = _context.Filme.FirstOrDefault(x => x.filmeID == filmeID);
+        var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).FirstOrDefault(x => x.filmeID == filmeID);
         if (f == null)
         {
             return NotFound();
@@ -38,12 +39,34 @@ public class FilmeController : BaseController
         f.nome = nome;
         f.resumo = resumo;
         f.ano = ano;
+
+        f.Actor.Clear();
+        if (actores != null && actores.Count > 0)
+        {
+            var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
+            foreach (var actor in selectedActores)
+            {
+                f.Actor.Add(actor);
+            }
+        }
+        f.Director.Clear();
+        if (directores != null && directores.Count > 0)
+        {
+            var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
+            foreach (var director in selectedDirectores)
+            {
+                f.Director.Add(director);
+            }
+        }
+
         await _context.SaveChangesAsync();
         return RedirectToAction("FilmeDetails", new { id = filmeID });
     }
 
     [HttpPost("create-filme")]
-    public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,[FromForm] List<int> directores)
+    public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,
+        [FromForm] List<int> actores,
+        [FromForm] List<int> directores)
     {
         var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
         var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
