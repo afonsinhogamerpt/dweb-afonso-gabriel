@@ -18,6 +18,12 @@ public class MenController : BaseController
         _userManager = userManager;
     }
     
+    /// <summary>
+    /// Apaga uma mensagem da database (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> DeleteMensagemForm([FromForm]int id)

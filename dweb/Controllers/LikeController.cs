@@ -19,7 +19,13 @@ public class LikeController : BaseController
         _context = context;
         _userManager = userManager;
     }
-   
+    
+    /// <summary>
+    /// Endpoint para dar um like a um determinado filme (o que está no LikeDTO é apenas um atributo "filmeID")
+    /// </summary>
+    /// <returns>
+    ///Atualiza a row correspondente do Utilizador e do Filme na tabela intermédia "FilmeUtilizador"
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult> Like(LikeDTO like)
     {
@@ -67,7 +73,12 @@ public class LikeController : BaseController
         return Redirect($"/Filme/FilmeDetails/{filme.filmeID}");
     }
     
-    
+    /// <summary>
+    /// Endpoint para dar um dislike a um determinado filme (o que está no LikeDTO é apenas um atributo "filmeID")
+    /// </summary>
+    /// <returns>
+    ///Atualiza a row correspondente do Utilizador e do Filme na tabela intermédia "FilmeUtilizador"
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult> Dislike(LikeDTO like)
     {

@@ -15,8 +15,18 @@ public class FilmeController : BaseController
 {
     private readonly AppDbContext _context;
     private readonly UserManager<Utilizador> _userManager;
-
     
+    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+    /// <summary>
+    /// Redireciona para a View "Films" e é feita a passagem de dados do controller para a view com ViewBags
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "Films"
+    /// </returns>
     [Authorize (Roles = "Administrador")]
     [HttpGet]
     [Route("/Filme/Films")]
@@ -31,6 +41,14 @@ public class FilmeController : BaseController
         ViewBag.Generos = generos;
         return View("Films", filmes);
     }
+    
+    
+    /// <summary>
+    /// Redireciona para a View "Films" e é feita a passagem de dados do controller para a view com ViewBags
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "FilmeDetails"
+    /// </returns>
 
     [HttpPost("update-filme")]
     public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,
@@ -81,6 +99,12 @@ public class FilmeController : BaseController
         return RedirectToAction("FilmeDetails", new { id = filmeID });
     }
 
+    /// <summary>
+    /// Cria um novo filme com os dados que são passados por argumento (este método é utilizado num form) 
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "Films"
+    /// </returns>
     [HttpPost("create-filme")]
     public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,
         [FromForm] List<int> actores,
@@ -104,12 +128,13 @@ public class FilmeController : BaseController
         return RedirectToAction("Films");
     }
 
-    public FilmeController(AppDbContext context, UserManager<Utilizador> userManager) : base(context)
-    {
-        _context = context;
-        _userManager = userManager;
-    }
-
+    
+    /// <summary>
+    /// Lista todos os filmes da aplicação
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com uma lista de filmes
+    /// </returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilmes()
     {
@@ -153,6 +178,13 @@ public class FilmeController : BaseController
         return Ok(filmes);
     }
 
+    
+    /// <summary>
+    /// Retorna um filme dado um determinado id passado por argumento
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com o filme que dê match ao id especificado
+    /// </returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<FilmeDTO>>> GetFilme(int id)
     {
@@ -201,7 +233,14 @@ public class FilmeController : BaseController
 
         return Ok(filme);
     }
-
+    
+    
+    /// <summary>
+    /// Cria um novo filme na database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult<Filme>> PostFilme(CreateMovieDTO createMovieDTO)
     {
@@ -238,6 +277,12 @@ public class FilmeController : BaseController
 
     }
 
+    /// <summary>
+    /// Atualiza os dados de um filme
+    /// </summary>
+    /// <returns>
+    ///Guarda na database os dados atualizados do filme
+    /// </returns>
     [HttpPut]
     public async Task<ActionResult<Filme>> PutFilme(Filme filme)
     {
@@ -255,6 +300,13 @@ public class FilmeController : BaseController
         await _context.SaveChangesAsync();
         return Ok(filme);
     }
+    
+    /// <summary>
+    /// Apaga os dados de um filme da database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
 
     [HttpPost("delete_film")]
     public async Task<ActionResult<Filme>> DeleteFilme([FromForm] int filmeID)
@@ -271,6 +323,13 @@ public class FilmeController : BaseController
         await _context.SaveChangesAsync();
         return RedirectToAction("Films");
     }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>
+    /// Retorna a View "FilmeDetails" com o filme escolhido pelo utilizador
+    /// </returns>
     
     [HttpGet]
     [Route("/Filme/FilmeDetails/{id}")]

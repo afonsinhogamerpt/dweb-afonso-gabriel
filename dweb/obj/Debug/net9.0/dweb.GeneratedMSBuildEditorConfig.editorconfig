@@ -64,6 +64,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWN0b3JcQWN0b3JEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/projs/dweb-afonso-gabriel/dweb/Views/Actor/actors.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWN0b3JcYWN0b3JzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/projs/dweb-afonso-gabriel/dweb/Views/Chat/Chat.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhdFxDaGF0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -72,12 +76,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlyZWN0b3JcRGlyZWN0b3JEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/projs/dweb-afonso-gabriel/dweb/Views/Director/directors.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlyZWN0b3JcZGlyZWN0b3JzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/projs/dweb-afonso-gabriel/dweb/Views/Filme/FilmeDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmlsbWVcRmlsbWVEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/projs/dweb-afonso-gabriel/dweb/Views/Gen/Genero.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VuXEdlbmVyby5jc2h0bWw=
+[D:/projs/dweb-afonso-gabriel/dweb/Views/Filme/Films.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmlsbWVcRmlsbXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/projs/dweb-afonso-gabriel/dweb/Views/Gen/Generos.cshtml]

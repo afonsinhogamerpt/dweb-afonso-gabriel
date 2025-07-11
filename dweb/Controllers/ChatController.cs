@@ -15,6 +15,13 @@ public class ChatController : BaseController
         _context = context;
     }
     
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "Chat" com um objeto com uma lista de mensagens
+    /// </returns>
     [Route("chat")]
     public async Task<IActionResult> Chat()
     {
