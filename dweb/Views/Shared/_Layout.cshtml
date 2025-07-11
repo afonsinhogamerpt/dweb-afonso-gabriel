@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <link rel="shortcut icon" href="images/filmly.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="@Url.Content("~/images/filmly.png")" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Filmly</title>
     <script type="importmap"></script>
@@ -50,7 +50,7 @@
                         }
                     </button>
                     
-                    @if (!User.IsInRole("Administrador"))
+                    @if (User.IsInRole("Administrador"))
                     {
                         
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -67,7 +67,7 @@
                         </ul>
                
                     }
-                    else if (1==1)
+                    else
                     {
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <strong><li><p class="dropdown-item" asp-controller="User" asp-action="Users">@ViewData["UserName"]</p></li></strong>

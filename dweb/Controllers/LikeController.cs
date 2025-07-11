@@ -20,100 +20,98 @@ public class LikeController : BaseController
         _userManager = userManager;
     }
    
-    [HttpPost("Like")]
+    [HttpPost]
     public async Task<ActionResult> Like(LikeDTO like)
     {
         var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userID == null)
-        {
-            return Redirect("/Identity/Account/Login");
-        }
-        var filme = await _context.Filme.FirstOrDefaultAsync(f => f.filmeID == like.filmeID);
-        if (filme == null)
-        {
-            return NotFound();
-        }
-        var reacao = await _context.FilmeUtilizador
-            .FirstOrDefaultAsync(fu => fu.FilmeId == filme.filmeID && fu.UtilizadorId == userID);
+        if (userID == null) return Redirect("/Identity/Account/Login");
 
-        if (reacao != null)
+        var filme = await _context.Filme.FindAsync(like.filmeID);
+        if (filme == null) return NotFound();
+
+        var reacao = await _context.FilmeUtilizador
+            .FirstOrDefaultAsync(fu => fu.FilmeId == like.filmeID && fu.UtilizadorId == userID);
+
+        if (reacao == null)
         {
-            if (reacao.IsLike)
+            filme.likes++;
+            _context.FilmeUtilizador.Add(new FilmeUtilizador
             {
-                filme.likes--;
-                _context.FilmeUtilizador.Remove(reacao);
-            }
-            else
-            {
-                filme.likes++;
-                filme.dislikes--;
-                reacao.IsLike = true;
-            }
+                FilmeId = like.filmeID,
+                UtilizadorId = userID,
+                IsLike = true
+            });
         }
         else
         {
-            filme.likes++;
-            var novaReacao = new FilmeUtilizador
+            switch (reacao.IsLike)
             {
-                FilmeId = filme.filmeID,
-                UtilizadorId = userID,
-                IsLike = true
-            };
-            _context.FilmeUtilizador.Add(novaReacao);
+                case true:
+                    filme.likes--;
+                    reacao.IsLike = null;
+                    break;
+                case false:
+                    filme.dislikes--;
+                    filme.likes++;
+                    reacao.IsLike = true;
+                    break;
+                case null:
+                    filme.likes++;
+                    reacao.IsLike = true;
+                    break;
+            }
+            _context.FilmeUtilizador.Update(reacao);
         }
 
         await _context.SaveChangesAsync();
-
         return Redirect($"/Filme/FilmeDetails/{filme.filmeID}");
     }
     
     
-    [HttpPost("Dislike")]
+    [HttpPost]
     public async Task<ActionResult> Dislike(LikeDTO like)
     {
         var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userID == null)
-        {
-            return Redirect("/Identity/Account/Login");
-        }
+        if (userID == null) return Redirect("/Identity/Account/Login");
 
-        var filme = await _context.Filme.FirstOrDefaultAsync(f => f.filmeID == like.filmeID);
-        if (filme == null)
-        {
-            return NotFound();
-        }
-        
+        var filme = await _context.Filme.FindAsync(like.filmeID);
+        if (filme == null) return NotFound();
+
         var reacao = await _context.FilmeUtilizador
-            .FirstOrDefaultAsync(fu => fu.FilmeId == filme.filmeID && fu.UtilizadorId == userID);
+            .FirstOrDefaultAsync(fu => fu.FilmeId == like.filmeID && fu.UtilizadorId == userID);
 
-        if (reacao != null)
+        if (reacao == null)
         {
-            if (reacao.IsLike == false)
+            filme.dislikes++;
+            _context.FilmeUtilizador.Add(new FilmeUtilizador
             {
-                filme.dislikes--;
-                _context.FilmeUtilizador.Remove(reacao);
-            }
-            else
-            {
-                filme.likes--;
-                filme.dislikes++;
-                reacao.IsLike = false;
-            }
+                FilmeId = like.filmeID,
+                UtilizadorId = userID,
+                IsLike = false
+            });
         }
         else
         {
-            filme.dislikes++;
-            var novaReacao = new FilmeUtilizador
+            switch (reacao.IsLike)
             {
-                FilmeId = filme.filmeID,
-                UtilizadorId = userID,
-                IsLike = false
-            };
-            _context.FilmeUtilizador.Add(novaReacao);
+                case false:
+                    filme.dislikes--;
+                    reacao.IsLike = null;
+                    break;
+                case true:
+                    filme.likes--;
+                    filme.dislikes++;
+                    reacao.IsLike = false;
+                    break;
+                case null:
+                    filme.dislikes++;
+                    reacao.IsLike = false;
+                    break;
+            }
+            _context.FilmeUtilizador.Update(reacao);
         }
 
         await _context.SaveChangesAsync();
-
         return Redirect($"/Filme/FilmeDetails/{filme.filmeID}");
     }
 }

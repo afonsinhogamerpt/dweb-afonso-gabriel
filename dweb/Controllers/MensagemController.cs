@@ -2,6 +2,7 @@
 using dweb.Models;
 using dweb.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
 
@@ -13,10 +14,12 @@ namespace dweb.Controllers;
 public class MensagemController : BaseController
 {
     private readonly AppDbContext _context;
+    private readonly IHubContext<ChatHub> _hubContext;
 
-    public MensagemController(AppDbContext context) : base(context)
+    public MensagemController(AppDbContext context, IHubContext<ChatHub> hubContext) : base(context)
     {
         _context = context;
+        _hubContext = hubContext;
     }
     
     
@@ -61,13 +64,12 @@ public class MensagemController : BaseController
     [HttpPost]
     public async Task<IActionResult> PostMensagens([FromBody] MensagemDTO mensagem)
     {
-
         var user = await _context.Users.FindAsync(mensagem.UserID);
-        
         if (user == null)
         {
             return Ok();
         }
+
         var me = new Mensagem
         {
             conteudo = mensagem.conteudo,
@@ -75,9 +77,18 @@ public class MensagemController : BaseController
             User = user,
             UserID = mensagem.UserID
         };
-        
+
         _context.Mensagem.Add(me);
         await _context.SaveChangesAsync();
+
+        
+        await _hubContext.Clients.All.SendAsync("ReceiveMessage", new {
+            conteudo = me.conteudo,
+            timestamp = me.timestamp,
+            userID = me.UserID,
+            username = user.UserName
+        });
+
         return Ok(mensagem);
     }
     
