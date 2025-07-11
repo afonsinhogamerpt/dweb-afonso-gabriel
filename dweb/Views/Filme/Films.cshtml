@@ -5,12 +5,12 @@
 
 
 <div class="d-flex justify-content-center mt-4">
-    <h2>Filmes</h2>
+    <h2 style="font-size:2rem;">Filmes</h2> 
 </div>
 
 <div class="d-flex justify-content-between p-4" style="gap: 2rem;">
     <div style="flex: 1;">
-        <h4>Filmes</h4>
+        <h4 style="font-size:1.3rem;">Filmes</h4>
         <div id="filmes-container"
              data-bs-spy="scroll"
              data-bs-target="#navbar-example2"
@@ -23,11 +23,13 @@
                 foreach (var f in Model)
                 {
                     <div>
-                        <h3>@f.nome</h3>
-                        <span class="text-muted">@f.ano</span>
-                        <a asp-action="FilmeDetails" asp-controller="Filme" asp-route-id="@f.filmeID" class="d-flex">
-                            <button type="button" class="btn" style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">Ir</button>
-                        </a>
+                        <form class="d-flex justify-content-between align-items-center" action="/Filme/FilmeDetails/@f.filmeID" method="get">
+                            <input type="hidden" name="id" value="@f.filmeID" />
+                            <strong><p style="font-size:1.1rem;">@f.nome</p></strong>
+                            <button class="btn" style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" type="submit">
+                                Ir
+                            </button>
+                        </form>
                     </div>
                 }
             }
@@ -39,7 +41,7 @@
     </div>
     <div style="flex: 1;">
         <div class="d-flex justify-content-center">
-            <h4>Criar Novo Filme</h4>
+            <h4 style="font-size:1.3rem;">Criar Novo Filme</h4>
         </div>
         <form asp-action="CreateFilme" asp-controller="Filme" method="post" enctype="multipart/form-data">
             <div class="form-floating mb-3">
@@ -103,10 +105,10 @@
                 <label>Resumo</label>
             </div>
             <div class="col-md-3">
-            <input type="file" id="file" name="file" class=" imgdrop" multiple="multiple" />
+                <input type="file" id="file" name="file" class="imgdrop" multiple="multiple" />
             </div>
             <div class="d-flex justify-content-center align-items-center">
-                <button type="submit" class="btn btn-primary" style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">Criar Filme</button>
+                <button style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" type="submit" class="btn btn-primary">Criar Filme</button>
             </div>
         </form>
     </div>

@@ -2,40 +2,50 @@
 @{
     ViewData["Title"] = "Detalhes do Diretor";
 }
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row">
         <div class="col-md-4">
             <img src="@(Model.imagem != null && Model.imagem.Length > 0
                           ? $"data:image/png;base64,{Convert.ToBase64String(Model.imagem)}"
                           : Url.Content("~/images/placeholder_user.jpg"))"
-                 class="img-fluid rounded shadow" alt="Imagem do director" />
+                 class="img-fluid rounded shadow" alt="Imagem do Diretor" />
         </div>
         <div class="col-md-8">
             <h2>@Model.nome</h2>
             <p><strong>Idade:</strong> @Model.idade</p>
             <p><strong>Biografia:</strong> @Model.bio</p>
-            <a href="javascript:history.back()" class="btn btn-secondary mt-3">Voltar</a>     
+
+            <div class="d-flex gap-2 mb-4">
+                <a style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" href="javascript:history.back()" class="btn">Voltar</a>
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <form asp-action="DeleteDirector" asp-controller="Director" method="post">
+                        <input type="hidden" name="directorID" value="@Model.directorID" />
+                        <button type="submit" class="btn" style="background: linear-gradient(90deg,#e74c3c,#f8cdda); color:white; border:none; font-weight:600;">Apagar</button>
+                    </form>
+                }
+            </div>
+
             @if (User.IsInRole("Administrador"))
             {
-                <form asp-action="UpdateDirector" asp-controller="Director" method="post" enctype="multipart/form-data" class="mt-3">
+                <form asp-action="UpdateDirector" asp-controller="Director" method="post" enctype="multipart/form-data">
                     <input type="hidden" asp-for="directorID" />
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="nome">Nome</label>
                         <input type="text" asp-for="nome" class="form-control" required />
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="idade">Idade</label>
                         <input type="number" asp-for="idade" class="form-control" required />
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="bio">Biografia</label>
                         <textarea asp-for="bio" class="form-control" required></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
-                <form asp-action="DeleteDirector" asp-controller="Director" method="post" class="mt-2">
-                    <input type="hidden" name="directorID" value="@Model.directorID" />
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-lg mt-3 mb-5"
+                            style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none;
+                                   font-weight:600; padding: 0.75rem 2rem;">Atualizar</button>
                 </form>
             }
         </div>
