@@ -4,12 +4,12 @@
 }
 
 <div class="d-flex justify-content-center mt-4">
-    <h2>Actores</h2>
+    <h2 style="font-size:2rem;">Actores</h2> 
 </div>
 
 <div class="d-flex justify-content-between p-4" style="gap: 2rem;">
     <div style="flex: 1;">
-        <h4>Actores</h4>
+        <h4 style="font-size:1.3rem;">Actores</h4>
         <div id="utilizadores-container"
              data-bs-spy="scroll"
              data-bs-target="#navbar-example2"
@@ -22,10 +22,13 @@
                 foreach (var u in Model)
                 {
                     <div>
-                        <h3>@u.nome</h3>
-                        <a asp-action="ActorDetails" asp-controller="Actor" asp-route-id="@u.actorID" class="d-flex">
-                            <button type="button">Ir</button>
-                        </a>
+                        <form class="d-flex justify-content-between align-items-center" action="/Actor/ActorDetails/@u.actorID" method="get">
+                            <input type="hidden" name="id" value="@u.actorID" />
+                            <strong><p style="font-size:1.1rem;">@u.nome</p></strong>
+                            <button class="btn" style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" type="submit">
+                                Ir
+                            </button>
+                        </form>
                     </div>
                 }
             }
@@ -37,23 +40,26 @@
     </div>
     <div style="flex: 1;">
         <div class="d-flex justify-content-center">
-            <h4>Criar Novo Actor</h4>
+            <h4 style="font-size:1.3rem;">Criar Novo Actor</h4>
         </div>
-        <form asp-action="CreateActor" asp-controller="Actor" method="post">
+        <form asp-action="CreateActor" asp-controller="Actor" method="post" enctype="multipart/form-data">
             <div class="form-floating mb-3">
-                <input class="form-control" placeholder="" name="nome" />
+                <input class="form-control" name="nome" placeholder="" />
                 <label>Nome do Actor</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="number" class="form-control" placeholder="" name="idade" />
+                <input type="number" class="form-control" name="idade" placeholder="" />
                 <label>Idade</label>
             </div>
             <div class="form-floating mb-3">
-                <textarea class="form-control" placeholder="" name="bio"></textarea>
+                <textarea class="form-control" name="bio" placeholder=""></textarea>
                 <label>Biografia</label>
             </div>
+            <div class="col-md-3">
+                <input type="file" id="file" name="file" class="imgdrop" multiple="multiple" />
+            </div>
             <div class="d-flex justify-content-center align-items-center">
-                <button type="submit" class="btn btn-primary">Criar Actor</button>
+                <button style="margin-left: 1rem; margin-right: 1rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" type="submit" class="btn btn-primary">Criar Actor</button>
             </div>
         </form>
     </div>

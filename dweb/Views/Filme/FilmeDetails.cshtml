@@ -1,19 +1,48 @@
 @model dweb.Models.Filme
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Detalhes do Filme";
     var returnUrl = HttpContextAccessor.HttpContext?.Request.Headers["Referer"].ToString();
     var actores = Model.Actor;
     var directores = Model.Director;
 }
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
-            <img src="@(string.IsNullOrEmpty(Model.imagem) ? Url.Content("~/images/placeholder.svg") : Model.imagem)"  class="img-fluid rounded shadow" alt="Imagem do Filme" />
+            <img src="@(Model.imagem != null && Model.imagem.Length > 0
+                          ? $"data:image/png;base64,{Convert.ToBase64String(Model.imagem)}"
+                          : Url.Content("~/images/placeholder.svg"))"
+                 class="img-fluid rounded shadow" alt="Imagem do Filme" />
+
+            <div class="d-flex flex-row justify-content-center align-items-center mt-4" style="gap: 2rem;">
+                <form asp-action="Like" asp-controller="Like" method="post" style="display: flex; align-items: center;">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                        <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/heart.jpg")" />
+                    </button>
+                    <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 10px; font-weight: bold;">
+                        @ViewData["likes"]
+                    </div>
+                </form>
+
+                <form asp-action="Dislike" asp-controller="Like" method="post" style="display: flex; align-items: center;">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
+                        <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/dislike.jpg")" />
+                    </button>
+                    <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 10px; font-weight: bold;">
+                        @ViewData["dislikes"]
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="col-md-8">
+
+        <div class="col-md-7">
             <h2>@Model.nome (@Model.ano)</h2>
             <p><strong>Resumo:</strong> @Model.resumo</p>
+
             <p>
                 <strong>Actores:</strong>
                 @if (actores != null && actores.Any())
@@ -23,11 +52,12 @@
                         <a href="@Url.Action("ActorDetails", "Actor", new { id = actor.actorID })">@actor.nome</a>@(actor != actores.Last() ? ", " : "")
                     }
                 }
-                else 
+                else
                 {
                     <span>Nenhum actor registado.</span>
                 }
             </p>
+
             <p>
                 <strong>Directores:</strong>
                 @if (directores != null && directores.Any())
@@ -42,26 +72,73 @@
                     <span>Nenhum director registado.</span>
                 }
             </p>
-            <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
+
+            <div class="d-flex flex-row gap-2 mt-4">
+                <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn"
+                   style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">
+                    Voltar
+                </a>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    if (ViewBag.FilmeGuardado == true)
+                    {
+                        <form asp-controller="User" asp-action="RetirarFilme" method="post" style="display:inline">
+                            <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                            <button type="submit" class="btn"
+                                    style="background: linear-gradient(90deg,#e74c3c,#f8cdda); color:white; border:none; font-weight:600;">
+                                Apagar
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="User" asp-action="GuardarFilme" method="post" style="display:inline">
+                            <input type="hidden" name="filmeId" value="@Model.filmeID" />
+                            <button type="submit" class="btn"
+                                    style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">
+                                Guardar
+                            </button>
+                        </form>
+                    }
+                }
+
+                @if (User.IsInRole("Administrador"))
+                {
+                    <form asp-action="DeleteFilme" asp-controller="Filme" method="post">
+                        <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                        <button type="submit" class="btn"
+                                style="background: linear-gradient(90deg,#e74c3c,#e67e22); color:white; border:none; font-weight:600">
+                            Apagar
+                        </button>
+                    </form>
+                }
+            </div>
+
             @if (User.IsInRole("Administrador"))
             {
                 <form asp-action="UpdateFilme" asp-controller="Filme" method="post" enctype="multipart/form-data" class="mt-3">
                     <input type="hidden" asp-for="filmeID" />
+
                     <div class="mb-2">
                         <label for="nome">Nome</label>
                         <input type="text" asp-for="nome" class="form-control" required />
                     </div>
+
                     <div class="mb-2">
                         <label for="ano">Ano</label>
                         <input type="number" asp-for="ano" class="form-control" required />
                     </div>
+
                     <div class="mb-2">
                         <label for="resumo">Resumo</label>
                         <textarea asp-for="resumo" class="form-control" required></textarea>
                     </div>
+
                     <div class="mb-3">
                         <label for="actorSelect" class="form-label">Actores</label>
-                        <select id="actorSelect" name="actores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                        <select id="actorSelect" name="actores" class="form-select" multiple size="4"
+                                style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{
                                 var actors = ViewBag.Actors as List<dweb.Models.Actor>;
                                 if (actors != null)
@@ -75,9 +152,11 @@
                         </select>
                         <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
                     </div>
+
                     <div class="mb-3">
                         <label for="directorSelect" class="form-label">Diretores</label>
-                        <select id="directorSelect" name="directores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                        <select id="directorSelect" name="directores" class="form-select" multiple size="4"
+                                style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{
                                 var directors = ViewBag.Directors as List<dweb.Models.Director>;
                                 if (directors != null)
@@ -91,9 +170,11 @@
                         </select>
                         <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
                     </div>
+
                     <div class="mb-3">
                         <label for="generosSelect" class="form-label">Géneros</label>
-                        <select id="generosSelect" name="generos" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                        <select id="generosSelect" name="generos" class="form-select" multiple size="4"
+                                style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{
                                 var generos = ViewBag.Generos as List<dweb.Models.Genero>;
                                 if (generos != null)
@@ -107,60 +188,16 @@
                         </select>
                         <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
-                <form asp-action="DeleteFilme" asp-controller="Filme" method="post" class="mt-2">
-                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <div class="col-md-3">
+                        <input type="file" id="file" name="file" class="imgdrop" multiple="multiple" />
+                    </div>
+                    <button type="submit" class="btn btn-lg mt-3 mb-5"
+                            style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none;
+                                   font-weight:600; padding: 0.75rem 2rem;">
+                        Atualizar
+                    </button>
                 </form>
             }
-            @if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                if (ViewBag.FilmeGuardado == true)
-                {
-                    <form asp-controller="User" asp-action="RetirarFilme" method="post" style="display:inline">
-                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
-                        <button type="submit" class="btn btn-danger mt-3">Retirar</button>
-                    </form>
-                }
-                else
-                {
-                    <form asp-controller="User" asp-action="GuardarFilme" method="post" style="display:inline">
-                        <input type="hidden" name="filmeId" value="@Model.filmeID" />
-                        <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-                    </form>
-                }
-            }
-
-            <div class="col-md-2">
-                <form asp-action="Like" asp-controller="Like" method="post">
-                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
-                    <div id="rates1" class="d-flex mt-4">
-                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
-                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/heart.jpg")" />
-                        </button>
-                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
-                            @ViewData["likes"]
-                        </div>
-                    </div>
-                </form>
-
-
-                <form asp-action="Dislike" asp-controller="Like" method="post">
-                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
-                    <div id="rates1" class="d-flex mt-4">
-                        <button type="submit" style="background:none; border:none; padding:0; cursor:pointer;">
-                            <img style="width: 60px; height: 60px;" src="@Url.Content("~/images/dislike.jpg")" />
-                        </button>
-                        <div id="likeCount" style="height: 60px; display: flex; align-items: center; margin-left: 20px; font-weight: bold;">
-                            @ViewData["dislikes"]
-                        </div>
-                    </div>
-                </form>
-                
-            </div>
-   
         </div>
     </div>
 </div>
-

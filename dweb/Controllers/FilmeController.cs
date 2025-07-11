@@ -53,7 +53,7 @@ public class FilmeController : BaseController
     [HttpPost("update-filme")]
     public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,
         [FromForm] List<int> directores,
-        [FromForm] List<int> generos)
+        [FromForm] List<int> generos, IFormFile? file)
     {
         var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).Include(x => x.Genero).FirstOrDefault(x => x.filmeID == filmeID);
         
@@ -94,6 +94,12 @@ public class FilmeController : BaseController
                 f.Genero.Add(genero);
             }
         }
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            f.imagem = memoryStream.ToArray();
+        }
 
         await _context.SaveChangesAsync();
         return RedirectToAction("FilmeDetails", new { id = filmeID });
@@ -109,7 +115,8 @@ public class FilmeController : BaseController
     public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,
         [FromForm] List<int> actores,
         [FromForm] List<int> directores,
-        [FromForm] List<int> generos)
+        [FromForm] List<int> generos,
+        IFormFile? file )
     {
         var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
         var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
@@ -123,6 +130,12 @@ public class FilmeController : BaseController
             Director = selectedDirectores,
             Genero = selectedGeneros
         };
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            filme.imagem = memoryStream.ToArray();
+        }
         _context.Filme.Add(filme);
         await _context.SaveChangesAsync();
         return RedirectToAction("Films");
@@ -259,13 +272,55 @@ public class FilmeController : BaseController
             Director = directores,
             Actor = actores,
         };
+        
 
         var response = new MovieDTO
         {
             nome = filme.nome,
             resumo = filme.resumo,
             ano = filme.ano,
-            imagem = filme.imagem,
+            Generos = generos.Select(g => g.generoID).ToList(),
+            Directores = directores.Select(d => d.directorID).ToList(),
+            Actores = actores.Select(a => a.actorID).ToList(),
+        };
+
+        _context.Filme.Add(filme);
+        await _context.SaveChangesAsync();
+        return Ok(response);
+
+    }
+    
+    [HttpPost("filme-file")]
+    public async Task<ActionResult<Filme>> PostFilmefile(CreateMovieDTO createMovieDTO,  IFormFile? file)
+    {
+
+        var generos = await _context.Genero.Where(g => createMovieDTO.generos.Contains(g.generoID)).ToListAsync();
+        var directores = await _context.Director.Where(d => createMovieDTO.directores.Contains(d.directorID)).ToListAsync();
+        var actores = await _context.Actor.Where(a => createMovieDTO.actores.Contains(a.actorID)).ToListAsync();
+
+        var filme = new Filme
+        {
+            nome = createMovieDTO.nome,
+            resumo = createMovieDTO.resumo,
+            imagem = createMovieDTO.imagem,
+            ano = createMovieDTO.ano,
+            Genero = generos,
+            Director = directores,
+            Actor = actores,
+        };
+        
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            filme.imagem = memoryStream.ToArray();
+        }
+
+        var response = new MovieDTO
+        {
+            nome = filme.nome,
+            resumo = filme.resumo,
+            ano = filme.ano,
             Generos = generos.Select(g => g.generoID).ToList(),
             Directores = directores.Select(d => d.directorID).ToList(),
             Actores = actores.Select(a => a.actorID).ToList(),

@@ -20,13 +20,12 @@ public class BaseController : Controller
     {
         _context = context;
     }
-    
+
     public override void OnActionExecuting(ActionExecutingContext context)
     {
+
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-        
-        
+
         if (!string.IsNullOrEmpty(userId))
         {
             var user = _context.Utilizador.FirstOrDefault(u => u.Id == userId);
@@ -42,4 +41,5 @@ public class BaseController : Controller
 
         base.OnActionExecuting(context);
     }
+
 }

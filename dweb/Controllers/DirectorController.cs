@@ -39,12 +39,18 @@ public class DirectorController : BaseController
     /// Redireciona para a View "DirectorDetails" em função do directorID
     /// </returns>
     [HttpPost("update-director")]
-    public async Task<IActionResult> UpdateDirector([FromForm] int directorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+    public async Task<IActionResult> UpdateDirector([FromForm] int directorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {
         var d = _context.Director.FirstOrDefault(x => x.directorID == directorID);
         if (d == null)
         {
             return NotFound();
+        }
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            d.imagem = memoryStream.ToArray();
         }
         d.nome = nome;
         d.idade = idade;
@@ -141,7 +147,7 @@ public class DirectorController : BaseController
     ///Redireciona para a View "Directors"
     /// </returns>
     [HttpPost("create-Director")]
-    public async Task<IActionResult> CreateDirector([FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+    public async Task<IActionResult> CreateDirector([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {
         var director = new Director
         {
@@ -149,6 +155,12 @@ public class DirectorController : BaseController
             idade = idade,
             bio = bio
         };
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            director.imagem = memoryStream.ToArray();
+        }
         _context.Director.Add(director);
         await _context.SaveChangesAsync();
         return RedirectToAction("Directors");

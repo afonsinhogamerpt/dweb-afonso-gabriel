@@ -6,5 +6,5 @@ public class DirectorDTO
     public string nome { get; set; }
     public int idade { get; set; }
     public string bio { get; set; }
-    public string imagem { get; set; }
+    public byte[]? imagem { get; set; }
 }

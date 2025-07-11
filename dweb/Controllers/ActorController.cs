@@ -39,12 +39,18 @@ namespace dweb.Controllers
         /// </returns>
 
         [HttpPost("update-actor")]
-        public async Task<IActionResult> UpdateActor([FromForm] int actorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+        public async Task<IActionResult> UpdateActor([FromForm] int actorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio,  IFormFile? file)
         {
             var a = _context.Actor.FirstOrDefault(x => x.actorID == actorID);
             if (a == null)
             {
                 return NotFound();
+            }
+            if (file != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                a.imagem = memoryStream.ToArray();
             }
             a.nome = nome;
             a.idade = idade;
@@ -103,12 +109,14 @@ namespace dweb.Controllers
             return NotFound();
         }
 
+
         /// <summary>
         /// Retorna um actor dado um determinado id passado por argumento
         /// </summary>
         /// <returns>
         /// Retorna a View "ActorDetails" com o utilizador que dê match dado o id passado por argumento
         /// </returns>
+
         [HttpGet]
         [Route("/Actor/ActorDetails/{id}")]
         public IActionResult ActorDetails(int id)
@@ -142,14 +150,21 @@ namespace dweb.Controllers
         ///
         /// </returns>
         [HttpPost("create-Actor")]
-        public async Task<IActionResult> CreateActor([FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+        public async Task<IActionResult> CreateActor([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
         {
             var actor = new Actor
             {
                 nome = nome,
                 idade = idade,
                 bio = bio
+                
             };
+            if (file != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                actor.imagem = memoryStream.ToArray();
+            }
             _context.Actor.Add(actor);
             await _context.SaveChangesAsync();
             return RedirectToAction("Actors");
