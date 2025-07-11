@@ -27,12 +27,18 @@ public class DirectorController : BaseController
     }
 
     [HttpPost("update-director")]
-    public async Task<IActionResult> UpdateDirector([FromForm] int directorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+    public async Task<IActionResult> UpdateDirector([FromForm] int directorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {
         var d = _context.Director.FirstOrDefault(x => x.directorID == directorID);
         if (d == null)
         {
             return NotFound();
+        }
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            d.imagem = memoryStream.ToArray();
         }
         d.nome = nome;
         d.idade = idade;

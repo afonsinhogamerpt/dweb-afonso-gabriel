@@ -26,12 +26,18 @@ namespace dweb.Controllers
         }
 
         [HttpPost("update-actor")]
-        public async Task<IActionResult> UpdateActor([FromForm] int actorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+        public async Task<IActionResult> UpdateActor([FromForm] int actorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio,  IFormFile? file)
         {
             var a = _context.Actor.FirstOrDefault(x => x.actorID == actorID);
             if (a == null)
             {
                 return NotFound();
+            }
+            if (file != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                a.imagem = memoryStream.ToArray();
             }
             a.nome = nome;
             a.idade = idade;
@@ -75,6 +81,7 @@ namespace dweb.Controllers
         }
 
       
+        
         [HttpGet]
         [Route("/Actor/ActorDetails/{id}")]
         public IActionResult ActorDetails(int id)

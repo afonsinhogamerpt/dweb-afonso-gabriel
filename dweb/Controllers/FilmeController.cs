@@ -35,7 +35,7 @@ public class FilmeController : BaseController
     [HttpPost("update-filme")]
     public async Task<IActionResult> UpdateFilme([FromForm] int filmeID, [FromForm] string nome, [FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,
         [FromForm] List<int> directores,
-        [FromForm] List<int> generos)
+        [FromForm] List<int> generos, IFormFile? file)
     {
         var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).Include(x => x.Genero).FirstOrDefault(x => x.filmeID == filmeID);
         
@@ -75,6 +75,12 @@ public class FilmeController : BaseController
             {
                 f.Genero.Add(genero);
             }
+        }
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            f.imagem = memoryStream.ToArray();
         }
 
         await _context.SaveChangesAsync();
