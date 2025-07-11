@@ -17,6 +17,12 @@ public class DirectorController : BaseController
         _context = context;
     }
     
+    /// <summary>
+    /// Redireciona para a View "Directors"
+    /// </summary>
+    /// <returns>
+    /// Retorna a View "Directors" com um objeto que contém uma lista de directores
+    /// </returns>
     [Authorize (Roles = "Administrador")]
     [HttpGet]
     [Route("/Director/Directors")]
@@ -26,6 +32,12 @@ public class DirectorController : BaseController
         return View("directors", directors);
     }
 
+    /// <summary>
+    /// Atualiza os dados de um determinado director (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    /// Redireciona para a View "DirectorDetails" em função do directorID
+    /// </returns>
     [HttpPost("update-director")]
     public async Task<IActionResult> UpdateDirector([FromForm] int directorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {
@@ -47,6 +59,12 @@ public class DirectorController : BaseController
         return RedirectToAction("DirectorDetails", new { id = directorID });
     }
 
+    /// <summary>
+    /// Apaga os dados de um determinado director (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    /// Redireciona para a View "Directors"
+    /// </returns>
     [HttpPost("delete-director")]
     public async Task<IActionResult> DeleteDirector([FromForm] int directorID)
     {
@@ -60,6 +78,12 @@ public class DirectorController : BaseController
         return RedirectToAction("Directors");
     }
 
+    /// <summary>
+    /// Lista todos os directores da aplicação
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com uma lista de directores
+    /// </returns>
     [HttpGet("all")]
     public ActionResult<IEnumerable<Director>> GetDirectors()
     {
@@ -67,6 +91,12 @@ public class DirectorController : BaseController
         return directors;
     }
 
+    /// <summary>
+    /// Retorna um director dado um determinado id passado por argumento
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com o director que dê match ao id especificado
+    /// </returns>
     [HttpGet("{id}")]
     public ActionResult<Director> GetDirector(int id)
     {
@@ -78,6 +108,12 @@ public class DirectorController : BaseController
         return NotFound();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "DirectorDetails"
+    /// </returns>
     [HttpGet]
     [Route("/Director/DirectorDetails/{id}")]
     public IActionResult DirectorDetails(int id)
@@ -90,6 +126,12 @@ public class DirectorController : BaseController
         return View(director);
     }
 
+    /// <summary>
+    /// Cria um novo director na database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult<Director>> PostDirector(Director director)
     {
@@ -98,6 +140,12 @@ public class DirectorController : BaseController
         return Ok(director);
     }
 
+    /// <summary>
+    /// Cria um novo director na database (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "Directors"
+    /// </returns>
     [HttpPost("create-Director")]
     public async Task<IActionResult> CreateDirector([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {

@@ -22,7 +22,12 @@ public class MensagemController : BaseController
         _hubContext = hubContext;
     }
     
-    
+    /// <summary>
+    /// Lista todas as mensagens da aplicação
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com uma lista de mensagens
+    /// </returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MensagemOutputDTO>>> GetMensagens()
     {
@@ -42,6 +47,12 @@ public class MensagemController : BaseController
         return Ok(mensagens);
     }
     
+    /// <summary>
+    /// Atualiza os dados de uma mensagem
+    /// </summary>
+    /// <returns>
+    ///Guarda na database os dados atualizados da mensagem
+    /// </returns>
     [HttpPut]
     public async Task<IActionResult> PutMensagens(Mensagem mensagem)
     {
@@ -60,7 +71,14 @@ public class MensagemController : BaseController
         await _context.SaveChangesAsync();
         return Ok(m);
     }
-
+    
+    
+    /// <summary>
+    /// Cria uma nova mensagem na database e propaga-a via ws (signalR) para todos os clients
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     public async Task<IActionResult> PostMensagens([FromBody] MensagemDTO mensagem)
     {
@@ -92,7 +110,13 @@ public class MensagemController : BaseController
         return Ok(mensagem);
     }
     
-    
+    /// <summary>
+    /// Apaga uma  mensagem da database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
+    /// 
     [HttpDelete]
     public async Task<IActionResult> DeleteMensagens(Mensagem mensagem)
     {

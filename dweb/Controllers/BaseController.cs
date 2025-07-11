@@ -5,6 +5,13 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace dweb.Controllers;
 
+/// <summary>
+/// Todos os controllers herdam este controller (BaseController)
+/// A ideia era carregar dados para as Views via ViewData e ViewBag
+/// </summary>
+/// <returns>
+///
+/// </returns>
 public class BaseController : Controller
 {
     protected readonly AppDbContext _context;

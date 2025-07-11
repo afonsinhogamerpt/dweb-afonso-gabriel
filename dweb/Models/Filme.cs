@@ -22,7 +22,6 @@ public class Filme
     [JsonIgnore]
     public ICollection<FilmeUtilizador> FilmeUtilizador { get; set; }
     public ICollection<Actor> Actor { get; set; } = new List<Actor>();
-    public ICollection<Review> ?FKReview { get; set; }
     public ICollection<Genero> Genero { get; set; } = new List<Genero>();
     public ICollection<Director> Director { get; set; } = new List<Director>();
     

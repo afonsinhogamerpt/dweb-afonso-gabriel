@@ -23,18 +23,37 @@ public class AuthController : BaseController
         _context = context;
     }
 
+    /// <summary>
+    /// Redireciona para a View "Login"
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpGet("login")]
     public IActionResult Login()
     {
         return Redirect("/Identity/Account/Login");
     }
     
+    /// <summary>
+    /// Redireciona para a View "Registo"
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpGet("registo")]
     public IActionResult Registo()
     {
         return Redirect("/Identity/Account/Register");
     }
 
+    /// <summary>
+    /// Valida se os dados inseridos são duplicados e se o texto inserido nos campos "Password" e "ConfirmPassword" são iguais
+    /// Cria um novo utilizador na database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost("registo")]
     public async Task<IActionResult> Registo(RegistoDTO registo)
     {
@@ -67,12 +86,16 @@ public class AuthController : BaseController
         {
             return Redirect("/User/Users");
         }
-
-        var errors = result.Errors.Select(e => e.Description);
-        return BadRequest(new { message = "Erro ao criar utilizador", erros = errors });
+        
     }
     
-    
+    /// <summary>
+    /// Valida se os dados inseridos correspondem a alguma row da tabela "AspNetUsers"
+    /// Autentica o utilizador e redireciona-o para a página principal (View --> Index)
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDTO login)
     {
@@ -98,7 +121,12 @@ public class AuthController : BaseController
         
         return BadRequest("Não foi possível efetuar o login");
     }
-    
+    /// <summary>
+    /// Permite fazer logout da aplicação
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {

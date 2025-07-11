@@ -19,7 +19,13 @@ public class UtilizadorController : BaseController
         _context = context;
         _userManager = userManager;
     }
-
+    
+    /// <summary>
+    /// Lista todos os utilizadores da aplicação
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com uma lista de utilizadores
+    /// </returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UtilizadorDTO>>> GetUtilizadores()
     {
@@ -43,6 +49,13 @@ public class UtilizadorController : BaseController
             .ToListAsync();
         return Ok(utilizadores);
     }
+    
+    /// <summary>
+    /// Retorna um utilizador dado um determinado id passado por argumento
+    /// </summary>
+    /// <returns>
+    ///Retorna um objeto com o utilizador que dê match ao id especificado
+    /// </returns>
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Utilizador>> GetUtilizador(string id)
@@ -57,6 +70,13 @@ public class UtilizadorController : BaseController
         
         return Ok(utilizador);
     }
+    
+    /// <summary>
+    /// Atualiza os dados de um utilizador (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Guarda na database os dados atualizados do utilizador
+    /// </returns>
     
     [HttpPost("update-utilizador")]
     public async Task<IActionResult> UpdateDados([FromForm] Utilizador model, IFormFile? file)
@@ -88,6 +108,13 @@ public class UtilizadorController : BaseController
         TempData["Success"] = "Dados atualizados com sucesso!";
         return RedirectToAction("Update", "User");
     }
+    
+    /// <summary>
+    /// Atualiza os dados de um utilizador
+    /// </summary>
+    /// <returns>
+    ///Guarda na database os dados atualizados do utilizador
+    /// </returns>
 
     [HttpPut]
     public async Task<IActionResult> PutUtilizador(Utilizador utilizador)
@@ -105,7 +132,13 @@ public class UtilizadorController : BaseController
         await _context.SaveChangesAsync();
         return Ok(utilizador);
     }
-
+    
+    /// <summary>
+    /// Cria um novo utilizador na database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     public async Task<IActionResult> PostUtilizador(Utilizador utilizador)
     {
@@ -113,7 +146,14 @@ public class UtilizadorController : BaseController
         await _context.SaveChangesAsync();
         return Ok(utilizador);
     }
-
+    
+    
+    /// <summary>
+    /// Apaga um determinado utilizador da database (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a página de Login
+    /// </returns>
     [HttpPost("delete-utilizador")]
     public async Task<IActionResult> DeleteUtilizador([FromForm] string id)
     {
@@ -131,6 +171,12 @@ public class UtilizadorController : BaseController
         return Redirect("/Identity/Account/Login");
     }
     
+    /// <summary>
+    ///Permite mudar a password de um determinado utilizador(este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a página de Login
+    /// </returns>
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword([FromForm] string id, [FromForm] string newPassword)
     {

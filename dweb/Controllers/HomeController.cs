@@ -21,18 +21,25 @@ public class HomeController : BaseController
         _logger = logger;
         _context = context;
     }
-
+    /// <summary>
+    /// Redireciona para a View "Index"
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "Index"
+    /// </returns>
     [HttpGet("/")]
     public IActionResult Index()
     {
         return View();
     }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
     
+    
+    /// <summary>
+    /// Redireciona para a View "Pesquisar" com um objeto com uma lista de filmes
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "Pesquisar"
+    /// </returns>
     public IActionResult Pesquisar(int? generoId, string search,string query, int page = 1)
     {
         string filmepesquisa = !string.IsNullOrEmpty(query) ? query : search;
@@ -58,8 +65,7 @@ public class HomeController : BaseController
         return View(filmes);
     }
     
-
-
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

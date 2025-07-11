@@ -15,7 +15,13 @@ namespace dweb.Controllers
         {
             _context = context;
         }
-
+        
+        /// <summary>
+        /// Lista todos os actores da aplicação
+        /// </summary>
+        /// <returns>
+        ///Retorna um objeto com uma lista de actores
+        /// </returns>
         [Authorize (Roles = "Administrador")]
         [HttpGet]
         [Route("/Actor/Actors")]
@@ -24,6 +30,13 @@ namespace dweb.Controllers
             var actors = _context.Actor.ToList();
             return View("actors", actors);
         }
+        
+        /// <summary>
+        /// Atualiza os dados de um actor (este método é utilizado num form)
+        /// </summary>
+        /// <returns>
+        ///Guarda na database os dados atualizados do actor
+        /// </returns>
 
         [HttpPost("update-actor")]
         public async Task<IActionResult> UpdateActor([FromForm] int actorID, [FromForm] string nome, [FromForm] int idade, [FromForm] string bio,  IFormFile? file)
@@ -46,7 +59,12 @@ namespace dweb.Controllers
             return RedirectToAction("ActorDetails", new { id = actorID });
         }
 
-        
+        /// <summary>
+        /// Apaga os dados de um actor (este método é utilizado num form)
+        /// </summary>
+        /// <returns>
+        ///
+        /// </returns>
         [HttpPost("delete-actor")]
         public async Task<IActionResult> DeleteActor([FromForm] int actorID)
         {
@@ -61,6 +79,12 @@ namespace dweb.Controllers
         }
 
         
+        /// <summary>
+        /// Lista todos os actores da aplicação
+        /// </summary>
+        /// <returns>
+        ///Retorna um objeto com uma lista de actores
+        /// </returns>
         [HttpGet("all")]
         public ActionResult<IEnumerable<Actor>> GetActors()
         {
@@ -68,7 +92,12 @@ namespace dweb.Controllers
             return actors;
         }
 
-       
+        /// <summary>
+        /// Retorna um actor dado um determinado id passado por argumento
+        /// </summary>
+        /// <returns>
+        /// Retorna um objeto com o actor que dê match ao id especificado
+        /// </returns>
         [HttpGet("{id}")]
         public ActionResult<Actor> GetActor(int id)
         {
@@ -80,8 +109,14 @@ namespace dweb.Controllers
             return NotFound();
         }
 
-      
-        
+
+        /// <summary>
+        /// Retorna um actor dado um determinado id passado por argumento
+        /// </summary>
+        /// <returns>
+        /// Retorna a View "ActorDetails" com o utilizador que dê match dado o id passado por argumento
+        /// </returns>
+
         [HttpGet]
         [Route("/Actor/ActorDetails/{id}")]
         public IActionResult ActorDetails(int id)
@@ -94,7 +129,12 @@ namespace dweb.Controllers
             return View(actor);
         }
 
-        
+        /// <summary>
+        /// Cria um novo actor na database
+        /// </summary>
+        /// <returns>
+        ///
+        /// </returns>
         [HttpPost]
         public async Task<ActionResult<Actor>> PostActor(Actor actor)
         {
@@ -103,7 +143,12 @@ namespace dweb.Controllers
             return Ok(actor);
         }
 
-      
+        /// <summary>
+        /// Cria um novo actor na database (este método é utilizado num form)
+        /// </summary>
+        /// <returns>
+        ///
+        /// </returns>
         [HttpPost("create-Actor")]
         public async Task<IActionResult> CreateActor([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
         {

@@ -14,13 +14,25 @@ public class GenController : BaseController
         _context = context;
     }
   
-    
+    /// <summary>
+    /// Redireciona para a View "Generos"
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "Generos"
+    /// </returns>
     [Authorize (Roles = "Administrador")]
     public IActionResult Generos()
     {
         return View();
     }
     
+    
+    /// <summary>
+    /// Atualiza os dados de um género (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "Generos"
+    /// </returns>
     [HttpPost("put")]
     public async Task<ActionResult<Genero>> PutGeneroForm([FromForm] string nome, [FromForm] int generoID) 
     {
@@ -38,6 +50,12 @@ public class GenController : BaseController
         return RedirectToAction("Generos", "Gen");
     }
     
+    /// <summary>
+    /// Apaga um determinado género (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///Redireciona para a View "Generos"
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult<Genero>> DeleteGeneroForm([FromForm] int id)
     {

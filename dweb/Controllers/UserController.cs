@@ -17,12 +17,25 @@ public class UserController : BaseController
         _userManager = userManager;
         _context = context;
     }
+    
+    /// <summary>
+    /// Redireciona para a View "Users"
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
    
     public IActionResult Users()
     {
         return View();
     }
     
+    /// <summary>
+    /// Redireciona para a View "Update" se o utilizador ja esteja autenticado.
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     public async Task<IActionResult> Update(string id)
     {
         Utilizador utilizador;
@@ -46,6 +59,13 @@ public class UserController : BaseController
         return View(utilizador);
         
     }
+    
+    /// <summary>
+    /// Permite guardar um filme na tabela intermédia "FilmeUtilizador" 
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
 
     [HttpPost]
     public async Task<IActionResult> GuardarFilme(int filmeId)
@@ -79,6 +99,13 @@ public class UserController : BaseController
         return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
     
+    
+    /// <summary>
+    /// Passa um objeto com os filmes associados a um determinado utilizador para dentro de uma View (UserFilms)
+    /// </summary>
+    /// <returns>
+    ///Retorna a View "UserFilms"
+    /// </returns>
     [HttpGet]
     public async Task<IActionResult> UserFilms()
     {
@@ -97,6 +124,12 @@ public class UserController : BaseController
         return View(filmes);
     }
     
+    /// <summary>
+    /// Permite retirar um filme da tabela intermédia "FilmeUtilizador" 
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost]
     public async Task<IActionResult> RetirarFilme(int filmeId)
     {
