@@ -11,7 +11,7 @@ public class Director
     public string nome { get; set; }
     public int idade { get; set; }
     public string bio { get; set; }
-    public string? imagem { get; set; }
+    public byte[]? imagem { get; set; }
     public ICollection<Filme> Filme { get; set; } = new List<Filme>();
 
 }

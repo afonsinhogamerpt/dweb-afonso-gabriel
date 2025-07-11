@@ -93,7 +93,7 @@ public class DirectorController : BaseController
     }
 
     [HttpPost("create-Director")]
-    public async Task<IActionResult> CreateDirector([FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+    public async Task<IActionResult> CreateDirector([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
     {
         var director = new Director
         {
@@ -101,6 +101,12 @@ public class DirectorController : BaseController
             idade = idade,
             bio = bio
         };
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            director.imagem = memoryStream.ToArray();
+        }
         _context.Director.Add(director);
         await _context.SaveChangesAsync();
         return RedirectToAction("Directors");

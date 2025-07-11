@@ -98,14 +98,21 @@ namespace dweb.Controllers
 
       
         [HttpPost("create-Actor")]
-        public async Task<IActionResult> CreateActor([FromForm] string nome, [FromForm] int idade, [FromForm] string bio)
+        public async Task<IActionResult> CreateActor([FromForm] string nome, [FromForm] int idade, [FromForm] string bio, IFormFile? file)
         {
             var actor = new Actor
             {
                 nome = nome,
                 idade = idade,
                 bio = bio
+                
             };
+            if (file != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream);
+                actor.imagem = memoryStream.ToArray();
+            }
             _context.Actor.Add(actor);
             await _context.SaveChangesAsync();
             return RedirectToAction("Actors");
