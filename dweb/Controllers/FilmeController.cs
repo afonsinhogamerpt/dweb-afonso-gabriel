@@ -20,6 +20,10 @@ public class FilmeController : BaseController
     public IActionResult Films()
     {
         var filmes = _context.Filme.Include(f => f.Actor).Include(f => f.Director).ToList();
+        var actors = _context.Actor.ToList();
+        var directors = _context.Director.ToList();
+        ViewBag.Actors = actors;
+        ViewBag.Directors = directors;
         return View("Films", filmes);
     }
 
@@ -39,13 +43,17 @@ public class FilmeController : BaseController
     }
 
     [HttpPost("create-filme")]
-    public async Task<IActionResult> CreateFilme([FromForm] string nome, [FromForm] string resumo, [FromForm] int ano)
+    public async Task<IActionResult> CreateFilme([FromForm] string nome,[FromForm] string resumo, [FromForm] int ano,[FromForm] List<int> actores,[FromForm] List<int> directores)
     {
+        var selectedActores = await _context.Actor.Where(a => actores.Contains(a.actorID)).ToListAsync();
+        var selectedDirectores = await _context.Director.Where(d => directores.Contains(d.directorID)).ToListAsync();
         var filme = new Filme
         {
             nome = nome,
             resumo = resumo,
-            ano = ano
+            ano = ano,
+            Actor = selectedActores,
+            Director = selectedDirectores
         };
         _context.Filme.Add(filme);
         await _context.SaveChangesAsync();

@@ -1,5 +1,6 @@
 ﻿using dweb.Data;
 using dweb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dweb.Controllers
@@ -15,6 +16,7 @@ namespace dweb.Controllers
             _context = context;
         }
 
+        [Authorize (Roles = "Administrador")]
         [HttpGet]
         [Route("/Actor/Actors")]
         public IActionResult Actors()

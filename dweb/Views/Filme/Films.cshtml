@@ -46,6 +46,86 @@
                 <label>Ano</label>
             </div>
             <div class="form-floating mb-3">
+                <label for="actorSelect">Atores</label>
+                <div class="input-group">
+                    <select id="actorSelect" class="form-control">
+                        @{
+                            var actors = ViewBag.Actors as List<dweb.Models.Actor>;
+                            if (actors != null)
+                            {
+                                foreach (var actor in actors)
+                                {
+                                    <option value="@actor.actorID">@actor.nome</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <button type="button" class="btn btn-outline-primary" id="addActorBtn">Adicionar</button>
+                </div>
+                <div id="selectedActorsBox" class="mt-2"></div>
+            </div>
+            <div class="form-floating mb-3">
+                <label for="directorSelect">Diretores</label>
+                <div class="input-group">
+                    <select id="directorSelect" class="form-control">
+                        @{
+                            var directors = ViewBag.Directors as List<dweb.Models.Director>;
+                            if (directors != null)
+                            {
+                                foreach (var director in directors)
+                                {
+                                    <option value="@director.directorID">@director.nome</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <button type="button" class="btn btn-outline-primary" id="addDirectorBtn">Adicionar</button>
+                </div>
+                <div id="selectedDirectorsBox" class="mt-2"></div>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    let selectedActors = [];
+                    let selectedDirectors = [];
+                    const actorSelect = document.getElementById('actorSelect');
+                    const directorSelect = document.getElementById('directorSelect');
+                    const selectedActorsBox = document.getElementById('selectedActorsBox');
+                    const selectedDirectorsBox = document.getElementById('selectedDirectorsBox');
+                    const addActorBtn = document.getElementById('addActorBtn');
+                    const addDirectorBtn = document.getElementById('addDirectorBtn');
+
+                    addActorBtn.addEventListener('click', function() {
+                        const selectedOption = actorSelect.options[actorSelect.selectedIndex];
+                        if (selectedOption && !selectedActors.some(a => a.id == selectedOption.value)) {
+                            selectedActors.push({ id: selectedOption.value, nome: selectedOption.text });
+                            actorSelect.remove(actorSelect.selectedIndex);
+                            renderActors();
+                        }
+                    });
+                    addDirectorBtn.addEventListener('click', function() {
+                        const selectedOption = directorSelect.options[directorSelect.selectedIndex];
+                        if (selectedOption && !selectedDirectors.some(d => d.id == selectedOption.value)) {
+                            selectedDirectors.push({ id: selectedOption.value, nome: selectedOption.text });
+                            directorSelect.remove(directorSelect.selectedIndex);
+                            renderDirectors();
+                        }
+                    });
+
+                    function renderActors() {
+                        let html = selectedActors.length ?
+                            '<strong>Atores adicionados:</strong> ' + selectedActors.map(a => a.nome).join(', ') : '';
+                        html += selectedActors.map(a => `<input type="hidden" name="actores" value="${a.id}" />`).join('');
+                        selectedActorsBox.innerHTML = html;
+                    }
+                    function renderDirectors() {
+                        let html = selectedDirectors.length ?
+                            '<strong>Diretores adicionados:</strong> ' + selectedDirectors.map(d => d.nome).join(', ') : '';
+                        html += selectedDirectors.map(d => `<input type="hidden" name="directores" value="${d.id}" />`).join('');
+                        selectedDirectorsBox.innerHTML = html;
+                    }
+                });
+            </script>
+            <div class="form-floating mb-3">
                 <textarea class="form-control" placeholder="" name="resumo"></textarea>
                 <label>Resumo</label>
             </div>
