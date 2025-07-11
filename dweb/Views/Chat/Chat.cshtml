@@ -1,17 +1,50 @@
-﻿@page
+﻿@model List<dweb.Models.Mensagem>
 @using System.Text.Json
-@model List<dweb.Models.Mensagem>
-
-
 
 <div class="container-fluid d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
     <div class="titulo mb-4">
         <h2 class="fw-bold" style="color:#2980b9; letter-spacing:1px;">Chat de Mensagens</h2>
     </div>
-    <div id="chatBox" class="chat-box shadow-lg mb-3" style="background: #fff; border-radius: 1.5rem; width: 100%; max-width: 900px; min-height: 500px; height: 500px; overflow-y: auto; padding: 2.5rem;"></div>
+
+    <div id="chatBox" class="chat-box shadow-lg mb-3" style="background: #fff; border-radius: 1.5rem; width: 100%; max-width: 900px; min-height: 500px; height: 500px; overflow-y: auto; padding: 2.5rem;">
+        @if (Model == null || !Model.Any())
+        {
+            <p>Nenhuma mensagem disponível.</p>
+        }
+        else
+        {
+            foreach (var msg in Model)
+            {
+                var isOwn = msg.UserID?.ToString() == (ViewData["UserID"]?.ToString() ?? "");
+                <div class="message @(isOwn ? "own" : "other")">
+                    <form asp-action="DeleteMensagemForm" asp-controller="Men" method="post" style="background: transparent; border: none; margin:0; padding:0;">
+                        <div class="username">@((msg.User?.UserName) ?? "Anónimo")</div>
+                        <div>@msg.conteudo</div>
+                        <div class="timestamp">@msg.timestamp.ToShortTimeString() @msg.timestamp.Date.Day/@msg.timestamp.Date.Month/@msg.timestamp.Date.Year</div>
+                        <input type="hidden" name="id" value="@msg.mensagemID" />
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <button type="submit" class="btn btn-sm btn-danger mt-2">Apagar</button>
+                        }
+                    </form>
+                </div>
+            }
+        }
+    </div>
+
     <div class="input-container w-100 d-flex justify-content-center align-items-center" style="max-width: 900px;">
         <input type="text" id="messageInput" placeholder="Escrever..." autocomplete="off" class="form-control me-2 shadow-sm" style="border-radius: 1.5rem;" />
-        <button onclick="sendMessage()" class="btn fw-bold px-4 py-2" style="border-radius: 1.5rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none;">Enviar</button>
+        @if (User.Identity.IsAuthenticated){
+            <button onclick="sendMessage()" class="btn fw-bold px-4 py-2" style="border-radius: 1.5rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none;">Enviar</button>
+        }
+        else
+        {
+            <form asp-action="Login" asp-controller="Auth" method="get">
+                <button class="btn fw-bold px-4 py-2" style="border-radius: 1.5rem; background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none;">Enviar</button>
+            </form>
+            
+        }
+        
     </div>
 </div>
 
@@ -38,7 +71,7 @@
         font-size: 15px;
         word-wrap: break-word;
         box-shadow: 0 1px 6px rgba(41,128,185,0.07);
-        background: #f4f8fb;
+        color: #333;
     }
     .message .username {
         font-weight: 600;
@@ -46,26 +79,26 @@
         font-size: 12px;
         color: #2980b9;
     }
-    .message.own .username {
-        color: #fff;
-    }
-    .message .timestamp {
-        font-size: 11px;
-        color: #999;
-        text-align: right;
-        margin-top: 5px;
-    }
     .message.own {
         background: linear-gradient(90deg,#2980b9,#6dd5fa);
         color: #fff;
         margin-left: auto;
         border-bottom-right-radius: 0.2rem;
     }
+    .message.own .username {
+        color: #fff;
+    }
     .message.other {
         background: #e0e0e0;
         color: #333;
         margin-right: auto;
         border-bottom-left-radius: 0.2rem;
+    }
+    .message .timestamp {
+        font-size: 11px;
+        color: #fff;
+        text-align: right;
+        margin-top: 5px;
     }
     .input-container input[type="text"] {
         border-radius: 1.5rem;
@@ -82,59 +115,18 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 <script>
-
-    const userID = @Html.Raw(JsonSerializer.Serialize(ViewBag.UserID ?? ""));
-    
-    async function loadMessages() {
-        try {
-            const response = await fetch('/api/Mensagem');
-            const mensagens = await response.json();
-
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = '';
-
-            mensagens.forEach(msg => {
-                const div = document.createElement('div');
-                div.classList.add('message');
-                
-                console.log("msg.userID:", `"${msg.userID}"`);
-                console.log("userID:", `"${userID}"`);
-                console.log("iguais?", msg.userID === userID);
-                
-                if (msg.userID === userID) {
-                    div.classList.add('own');
-                } else {
-                    div.classList.add('other');
-                }
-
-                div.innerHTML = `
-                    <div class="username">${msg.username || 'Anónimo'}</div>
-                    <div>${msg.conteudo}</div>
-                    <div class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-                `;
-                chatBox.appendChild(div);
-            });
-
-            
-            chatBox.scrollTop = chatBox.scrollHeight;
-        } catch (err) {
-            console.error('Erro ao carregar mensagens:', err);
-        }
-    }
-
-    loadMessages();
+    const userID = @Html.Raw(JsonSerializer.Serialize(ViewData["UserID"] ?? ""));
 
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/chathub")
         .build();
 
     connection.on("ReceiveMessage", function (message) {
-        
-        loadMessages(); 
+        location.reload();
     });
 
     connection.start().catch(function (err) {
-        return console.error(err.toString());
+        console.error(err.toString());
     });
 
     async function sendMessage() {
@@ -159,14 +151,8 @@
             }
 
             input.value = '';
-
-            await connection.invoke("SendMessage", message);
-            
-            loadMessages();
-
         } catch (err) {
             console.error(err);
         }
     }
-
 </script>

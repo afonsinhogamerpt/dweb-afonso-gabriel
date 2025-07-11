@@ -48,6 +48,7 @@ public class HomeController : BaseController
         {
             filmesQuery = filmesQuery.Where(f => f.nome.ToLower().Contains(filmepesquisa.ToLower()));
         }
+        
         var filmes = filmesQuery.ToList();
         ViewBag.Generos = generos;
         ViewBag.SelectedGenero = generoId;

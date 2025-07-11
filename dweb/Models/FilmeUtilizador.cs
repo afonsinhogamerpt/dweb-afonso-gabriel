@@ -8,7 +8,7 @@ public class FilmeUtilizador
     public int FilmeId { get; set; }
     public Filme Filme { get; set; }
 
-    public bool IsLike { get; set; }
+    public bool? IsLike { get; set; }
     
     public bool IsGuardado { get; set; }
     

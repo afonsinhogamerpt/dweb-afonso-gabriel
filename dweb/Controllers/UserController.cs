@@ -61,15 +61,13 @@ public class UserController : BaseController
 
         if (existing == null)
         {
-            var filmeUtilizador = new FilmeUtilizador
+            _context.FilmeUtilizador.Add(new FilmeUtilizador
             {
                 FilmeId = filmeId,
                 UtilizadorId = user.Id,
                 IsGuardado = true,
-                IsLike = false
-            };
-
-            _context.FilmeUtilizador.Add(filmeUtilizador);
+                IsLike = null
+            });
         }
         else if (!existing.IsGuardado)
         {
@@ -78,7 +76,6 @@ public class UserController : BaseController
         }
 
         await _context.SaveChangesAsync();
-
         return RedirectToAction("FilmeDetails", "Filme", new { id = filmeId });
     }
     
@@ -104,17 +101,17 @@ public class UserController : BaseController
     public async Task<IActionResult> RetirarFilme(int filmeId)
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return Unauthorized();
-        }
+        if (user == null) return Unauthorized();
 
         var relacao = await _context.FilmeUtilizador
             .FirstOrDefaultAsync(f => f.FilmeId == filmeId && f.UtilizadorId == user.Id);
 
         if (relacao != null)
         {
-            _context.FilmeUtilizador.Remove(relacao);
+            
+            relacao.IsGuardado = false;
+
+            _context.FilmeUtilizador.Update(relacao);
             await _context.SaveChangesAsync();
         }
 
