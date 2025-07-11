@@ -61,7 +61,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="actorSelect" class="form-label">Actores</label>
-                        <select id="actorSelect" name="actores[]" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                        <select id="actorSelect" name="actores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{
                                 var actors = ViewBag.Actors as List<dweb.Models.Actor>;
                                 if (actors != null)
@@ -75,24 +75,16 @@
                         </select>
                         <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
                     </div>
-                    <div class="mb-2">
-                        <label for="directorSelect">Diretores</label>
-                        <select id="directorSelect" name="directores[]" class="form-select" multiple size="3" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                    <div class="mb-3">
+                        <label for="directorSelect" class="form-label">Diretores</label>
+                        <select id="directorSelect" name="directores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{
-                                var directors = ViewBag.Directors as List<Director>;
-                                var selectedDirectors = Model.Director?.Select(d => d.directorID).ToList() ?? new List<int>();
+                                var directors = ViewBag.Directors as List<dweb.Models.Director>;
                                 if (directors != null)
                                 {
                                     foreach (var director in directors)
                                     {
-                                        if (selectedDirectors.Contains(director.directorID))
-                                        {
-                                            <option value="@director.directorID" selected>@director.nome</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@director.directorID">@director.nome</option>
-                                        }
+                                        <option value="@director.directorID">@director.nome</option>
                                     }
                                 }
                             }

@@ -52,7 +52,7 @@
             </div>
             <div class="mb-3">
                 <label for="actorSelect" class="form-label">Atores</label>
-                <select id="actorSelect" name="actores[]" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                <select id="actorSelect" name="actores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                     @{
                         var actors = ViewBag.Actors as List<dweb.Models.Actor>;
                         if (actors != null)
@@ -68,7 +68,7 @@
             </div>
             <div class="mb-3">
                 <label for="directorSelect" class="form-label">Diretores</label>
-                <select id="directorSelect" name="directores[]" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                <select id="directorSelect" name="directores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                     @{
                         var directors = ViewBag.Directors as List<dweb.Models.Director>;
                         if (directors != null)

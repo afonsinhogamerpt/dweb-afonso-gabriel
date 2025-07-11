@@ -32,6 +32,7 @@ public class FilmeController : BaseController
         [FromForm] List<int> directores)
     {
         var f = _context.Filme.Include(x => x.Actor).Include(x => x.Director).FirstOrDefault(x => x.filmeID == filmeID);
+        
         if (f == null)
         {
             return NotFound();
@@ -267,7 +268,12 @@ public class FilmeController : BaseController
         ViewData["likes"] = filme.likes;
         ViewData["dislikes"] = filme.dislikes;
         ViewData["filmeID"] = filme.filmeID;
-
+        
+        var actors = _context.Actor.ToList();
+        var directors = _context.Director.ToList();
+        ViewBag.Actors = actors;
+        ViewBag.Directors = directors;
+        
         ViewBag.Directores = filme.Director.ToList();
         ViewBag.Actores = filme.Actor.ToList();
         bool filmeGuardado = false;
