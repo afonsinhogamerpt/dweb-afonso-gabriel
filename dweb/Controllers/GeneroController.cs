@@ -46,6 +46,22 @@ public class GeneroController : BaseController
         await _context.SaveChangesAsync();
         return Ok(genero);
     }
+    
+    [HttpPost("form")]
+    public async Task<ActionResult<Genero>> PostGeneroForm([FromForm] string nome)
+    {
+        var genero = new Genero
+        {
+            nome = nome
+        };
+        
+        _context.Genero.Add(genero);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Generos", "Gen");
+    }
+    
+    
+    
 
     [HttpPut]
     public async Task<ActionResult<Genero>> PutGenero(Genero genero)
@@ -63,6 +79,8 @@ public class GeneroController : BaseController
         _context.SaveChanges();
         return Ok(gen);
     }
+    
+    
 
     [HttpDelete]
     public async Task<ActionResult<Genero>> DeleteGenero([FromBody] int id)
@@ -80,4 +98,5 @@ public class GeneroController : BaseController
         await _context.SaveChangesAsync();
         return Ok("Género removido com sucesso!");
     }
+    
 }

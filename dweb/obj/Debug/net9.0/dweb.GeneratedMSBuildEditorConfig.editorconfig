@@ -76,6 +76,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmlsbWVcRmlsbWVEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/projs/dweb-afonso-gabriel/dweb/Views/Gen/Genero.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VuXEdlbmVyby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/projs/dweb-afonso-gabriel/dweb/Views/Gen/Generos.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2VuXEdlbmVyb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/projs/dweb-afonso-gabriel/dweb/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
