@@ -43,6 +43,61 @@
                 }
             </p>
             <a href="@(string.IsNullOrEmpty(returnUrl) ? Url.Action("Index", "Home") : returnUrl)" class="btn btn-secondary mt-3">Voltar</a>
+            @if (User.IsInRole("Administrador"))
+            {
+                <form asp-action="UpdateFilme" asp-controller="Filme" method="post" enctype="multipart/form-data" class="mt-3">
+                    <input type="hidden" asp-for="filmeID" />
+                    <div class="mb-2">
+                        <label for="nome">Nome</label>
+                        <input type="text" asp-for="nome" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="ano">Ano</label>
+                        <input type="number" asp-for="ano" class="form-control" required />
+                    </div>
+                    <div class="mb-2">
+                        <label for="resumo">Resumo</label>
+                        <textarea asp-for="resumo" class="form-control" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="actorSelect" class="form-label">Actores</label>
+                        <select id="actorSelect" name="actores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                            @{
+                                var actors = ViewBag.Actors as List<dweb.Models.Actor>;
+                                if (actors != null)
+                                {
+                                    foreach (var actor in actors)
+                                    {
+                                        <option value="@actor.actorID">@actor.nome</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="directorSelect" class="form-label">Diretores</label>
+                        <select id="directorSelect" name="directores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
+                            @{
+                                var directors = ViewBag.Directors as List<dweb.Models.Director>;
+                                if (directors != null)
+                                {
+                                    foreach (var director in directors)
+                                    {
+                                        <option value="@director.directorID">@director.nome</option>
+                                    }
+                                }
+                            }
+                        </select>
+                        <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+                <form asp-action="DeleteFilme" asp-controller="Filme" method="post" class="mt-2">
+                    <input type="hidden" name="filmeID" value="@Model.filmeID" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            }
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 if (ViewBag.FilmeGuardado == true)
@@ -88,9 +143,7 @@
                 </form>
                 
             </div>
-          
-            
-            
+   
         </div>
     </div>
 </div>
