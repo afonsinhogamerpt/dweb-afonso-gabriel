@@ -11,11 +11,13 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
+            @* Imagem do filme (ou placeholder) *@
             <img src="@(Model.imagem != null && Model.imagem.Length > 0
                           ? $"data:image/png;base64,{Convert.ToBase64String(Model.imagem)}"
                           : Url.Content("~/images/placeholder.svg"))"
                  class="img-fluid rounded shadow" alt="Imagem do Filme" />
 
+            @* Secção de likes e dislikes *@
             <div class="d-flex flex-row justify-content-center align-items-center mt-4" style="gap: 2rem;">
                 <form asp-action="Like" asp-controller="Like" method="post" style="display: flex; align-items: center;">
                     <input type="hidden" name="filmeID" value="@Model.filmeID" />
@@ -43,6 +45,7 @@
             <h2>@Model.nome (@Model.ano)</h2>
             <p><strong>Resumo:</strong> @Model.resumo</p>
 
+            @* Lista de actores associados ao filme e ainda redireciona o utilizador para a página de detalhes do actor quando clicado*@
             <p>
                 <strong>Actores:</strong>
                 @if (actores != null && actores.Any())
@@ -59,12 +62,14 @@
             </p>
 
             <p>
+                @* Lista de directores associados ao filme e ainda redireciona o utilizador para a página de detalhes do actor quando clicado *@
                 <strong>Directores:</strong>
                 @if (directores != null && directores.Any())
                 {
                     foreach (var director in directores)
                     {
-                        <a href="@Url.Action("DirectorDetails", "Director", new { id = director.directorID })">@director.nome</a>@(director != directores.Last() ? ", " : "")
+                        <a href="@Url.Action("DirectorDetails", "Director", new { id = director.directorID })">@director.nome</a>
+                        @(director != directores.Last() ? ", " : "")
                     }
                 }
                 else
@@ -78,7 +83,7 @@
                    style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;">
                     Voltar
                 </a>
-
+                @* Forms que permitem guardar ou retirar filmes associados a um user *@
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     if (ViewBag.FilmeGuardado == true)
@@ -87,7 +92,7 @@
                             <input type="hidden" name="filmeId" value="@Model.filmeID" />
                             <button type="submit" class="btn"
                                     style="background: linear-gradient(90deg,#e74c3c,#f8cdda); color:white; border:none; font-weight:600;">
-                                Apagar
+                                Retirar
                             </button>
                         </form>
                     }
@@ -102,7 +107,7 @@
                         </form>
                     }
                 }
-
+                @* Forms que permitem eliminar, ou dar update caso seja administrador*@
                 @if (User.IsInRole("Administrador"))
                 {
                     <form asp-action="DeleteFilme" asp-controller="Filme" method="post">
@@ -154,7 +159,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="directorSelect" class="form-label">Diretores</label>
+                        <label for="directorSelect" class="form-label">Directores</label>
                         <select id="directorSelect" name="directores" class="form-select" multiple size="4"
                                 style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                             @{

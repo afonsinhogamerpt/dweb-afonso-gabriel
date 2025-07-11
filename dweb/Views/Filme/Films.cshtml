@@ -8,6 +8,7 @@
     <h2 style="font-size:2rem;">Filmes</h2> 
 </div>
 
+@*lista de filmes e formulário de criação dos mesmos*@
 <div class="d-flex justify-content-between p-4" style="gap: 2rem;">
     <div style="flex: 1;">
         <h4 style="font-size:1.3rem;">Filmes</h4>
@@ -43,6 +44,7 @@
         <div class="d-flex justify-content-center">
             <h4 style="font-size:1.3rem;">Criar Novo Filme</h4>
         </div>
+        @*Formulário que permite a criação de um filme, permite ir buscar os actores, directores e generos e associá-los ao filme*@
         <form asp-action="CreateFilme" asp-controller="Filme" method="post" enctype="multipart/form-data">
             <div class="form-floating mb-3">
                 <input class="form-control" name="nome" placeholder="" />
@@ -53,7 +55,7 @@
                 <label>Ano</label>
             </div>
             <div class="mb-3">
-                <label for="actorSelect" class="form-label">Atores</label>
+                <label for="actorSelect" class="form-label">Actores</label>
                 <select id="actorSelect" name="actores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                     @{
                         var actors = ViewBag.Actors as List<dweb.Models.Actor>;
@@ -69,7 +71,7 @@
                 <small class="form-text text-muted">Use Ctrl+Click ou Shift+Click para selecionar vários.</small>
             </div>
             <div class="mb-3">
-                <label for="directorSelect" class="form-label">Diretores</label>
+                <label for="directorSelect" class="form-label">Directores</label>
                 <select id="directorSelect" name="directores" class="form-select" multiple size="4" style="min-height: 70px; max-height: 120px; overflow-y: auto;">
                     @{
                         var directors = ViewBag.Directors as List<dweb.Models.Director>;

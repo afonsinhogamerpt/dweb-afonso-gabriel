@@ -19,6 +19,7 @@
     int totalPages = (int)Math.Ceiling((double)filmesCount / pageSize);
 }
 
+@*Página que permite a pesquisa de filmes através de filtros de género, ou por nome*@
 <div class="container-fluid py-5" style="background-color: #f8f9fa; border-radius: 1.5rem;">
     <h2 class="mb-4 text-center fw-bold" style="color:#2980b9;">Pesquisar Filmes</h2>
     <form asp-action="Pesquisar" asp-controller="Home" method="get" class="d-flex justify-content-center align-items-center mb-4">
@@ -30,6 +31,8 @@
     <div class="row">
         <div class="col-md-2">
             <div class="p-3 rounded-4 shadow-sm mb-4" style="background: linear-gradient(135deg,#e0eafc,#cfdef3);">
+
+                @*Filtro por género*@
                 <h5 class="fw-bold" style="color:#2980b9;">Géneros</h5>
                 <ul class="list-unstyled ms-2">
                     <li><a href="@Url.Action("Pesquisar", new { query = search })" class="@(selectedGenero == null ? "fw-bold text-primary" : "")">Todos</a></li>
@@ -79,6 +82,8 @@
                         }
                     }
                 </div>
+
+                @*Paginação*@
                 <nav class="mt-4">
                     <ul class="pagination justify-content-center">
                         @for (int p = 1; p <= totalPages; p++)

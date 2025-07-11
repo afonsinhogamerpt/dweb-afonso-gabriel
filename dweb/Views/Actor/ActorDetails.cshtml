@@ -2,9 +2,12 @@
 @{
     ViewData["Title"] = "Detalhes do Actor";
 }
+
+@* Container principal dos detalhes do actor *@
 <div class="container mt-5 mb-5">
     <div class="row">
         <div class="col-md-4">
+            @* Imagem do actor (ou placeholder) *@
             <img src="@(Model.imagem != null && Model.imagem.Length > 0
                           ? $"data:image/png;base64,{Convert.ToBase64String(Model.imagem)}"
                           : Url.Content("~/images/placeholder_user.jpg"))"
@@ -15,6 +18,7 @@
             <p><strong>Idade:</strong> @Model.idade</p>
             <p><strong>Biografia:</strong> @Model.bio</p>
 
+            @* Botões de voltar e apagar (apenas para administradores) *@
             <div class="d-flex gap-2 mb-4">
                 <a style="background: linear-gradient(90deg,#2980b9,#6dd5fa); color:white; border:none; font-weight:600;" href="javascript:history.back()" class="btn">Voltar</a>
 
@@ -27,6 +31,7 @@
                 }
             </div>
 
+            @* Formulário de edição de actores (apenas para administradores) *@
             @if (User.IsInRole("Administrador"))
             {
                 <form asp-action="UpdateActor" asp-controller="Actor" method="post" enctype="multipart/form-data">

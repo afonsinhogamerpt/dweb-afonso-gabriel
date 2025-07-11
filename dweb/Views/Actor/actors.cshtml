@@ -7,6 +7,7 @@
     <h2 style="font-size:2rem;">Actores</h2> 
 </div>
 
+@* lista de actores e formulário de criação dos mesmos *@
 <div class="d-flex justify-content-between p-4" style="gap: 2rem;">
     <div style="flex: 1;">
         <h4 style="font-size:1.3rem;">Actores</h4>
@@ -17,6 +18,7 @@
              class="scrollspy-example border p-3"
              style="height: 400px; overflow-y: auto;"
              tabindex="0">
+            @* Lista de actores registados *@
             @if (Model != null && Model.Count > 0)
             {
                 foreach (var u in Model)
@@ -34,18 +36,20 @@
             }
             else
             {
-                <p>Não há actores para mostrar.</p>
+                @* Mensagem caso não existam actores *@
+                <p>Não existem actores para mostrar.</p>
             }
         </div>
     </div>
     <div style="flex: 1;">
         <div class="d-flex justify-content-center">
-            <h4 style="font-size:1.3rem;">Criar Novo Actor</h4>
+            <h4 style="font-size:1.3rem;">Criar Novo Ator</h4>
         </div>
+        @* Formulário para criar um novo actor *@
         <form asp-action="CreateActor" asp-controller="Actor" method="post" enctype="multipart/form-data">
             <div class="form-floating mb-3">
                 <input class="form-control" name="nome" placeholder="" />
-                <label>Nome do Actor</label>
+                <label>Nome do actor</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="number" class="form-control" name="idade" placeholder="" />
