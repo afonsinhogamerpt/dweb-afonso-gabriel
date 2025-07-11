@@ -289,7 +289,12 @@ public class FilmeController : BaseController
         return Ok(response);
 
     }
-    
+    /// <summary>
+    /// Cria um novo filme na database (este método é utilizado num form)
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
     [HttpPost("filme-file")]
     public async Task<ActionResult<Filme>> PostFilmefile(CreateMovieDTO createMovieDTO,  IFormFile? file)
     {

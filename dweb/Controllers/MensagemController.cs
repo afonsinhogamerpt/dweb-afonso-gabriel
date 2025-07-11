@@ -23,6 +23,22 @@ public class MensagemController : BaseController
     }
     
     /// <summary>
+    /// Retorna uma mensagem dado o id passado por argumento
+    /// </summary>
+    /// <returns>
+    ///Retorna uma mensagem
+    /// </returns>
+    [HttpGet("{id}")]
+    public async Task<ActionResult<IEnumerable<MensagemOutputDTO>>> GetMensagem(int id)
+    {
+        var mensagem = await _context.Mensagem.Where(u => u.mensagemID.Equals(id)). 
+            FirstOrDefaultAsync();
+
+        
+        return Ok(mensagem);
+    }
+    
+    /// <summary>
     /// Lista todas as mensagens da aplicação
     /// </summary>
     /// <returns>
@@ -106,6 +122,36 @@ public class MensagemController : BaseController
             userID = me.UserID,
             username = user.UserName
         });
+
+        return Ok(mensagem);
+    }
+    
+    /// <summary>
+    /// Cria uma nova mensagem na database
+    /// </summary>
+    /// <returns>
+    ///
+    /// </returns>
+    [HttpPost("no-signalr")]
+    [Route("no-signalr")]
+    public async Task<IActionResult> PostMensagensnd([FromBody] MensagemDTO mensagem)
+    {
+        var user = await _context.Users.FindAsync(mensagem.UserID);
+        if (user == null)
+        {
+            return Ok();
+        }
+
+        var me = new Mensagem
+        {
+            conteudo = mensagem.conteudo,
+            timestamp = DateTime.Now,
+            User = user,
+            UserID = mensagem.UserID
+        };
+
+        _context.Mensagem.Add(me);
+        await _context.SaveChangesAsync();
 
         return Ok(mensagem);
     }
