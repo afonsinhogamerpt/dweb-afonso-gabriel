@@ -384,6 +384,22 @@ public class FilmeController : BaseController
         return RedirectToAction("Films");
     }
     
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Filme>> DeleteFilmend(int filmeID)
+    {
+        var f = _context.Filme.
+            Where(f => f.filmeID == filmeID).
+            FirstOrDefault();
+
+        if (f == null)
+        {
+            return NotFound();
+        }
+        _context.Filme.Remove(f);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Films");
+    }
+    
     /// <summary>
     /// 
     /// </summary>

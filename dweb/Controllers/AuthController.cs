@@ -57,7 +57,6 @@ public class AuthController : BaseController
     [HttpPost("registo")]
     public async Task<IActionResult> Registo(RegistoDTO registo)
     {
-        
         if (!ModelState.IsValid)
         {
             return View(registo);

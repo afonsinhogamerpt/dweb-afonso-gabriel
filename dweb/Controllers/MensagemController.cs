@@ -164,7 +164,7 @@ public class MensagemController : BaseController
     /// </returns>
     /// 
     [HttpDelete]
-    public async Task<IActionResult> DeleteMensagens(Mensagem mensagem)
+    public async Task<IActionResult> DeleteMensagens([FromBody] Mensagem mensagem)
     {
         var me = await _context.Mensagem. 
             Where(me => me.mensagemID == mensagem.mensagemID). 
