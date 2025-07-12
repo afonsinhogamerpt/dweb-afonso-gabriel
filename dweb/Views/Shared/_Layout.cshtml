@@ -31,8 +31,9 @@
 
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
+                    <li class="nav-item d-flex">
                         <a class="nav-link text-white" asp-controller="Chat" asp-action="Chat">Chat</a>
+                        <a class="nav-link text-white text-decoration-none" asp-action="About" asp-controller="About">Sobre nós</a>
                     </li>
                 </ul>
             </div>
@@ -52,6 +53,7 @@
                             <img src='@Url.Content("~/images/placeholder_user.jpg")' class="rounded-circle shadow" style="height: 40px; width: 40px; object-fit: cover;" alt="Login"/>
                         }
                     </button>
+                    
 
                     @*Caso o user.role seja admin permite que apareça novas routes*@
                     @if (User.IsInRole("Administrador"))
@@ -108,7 +110,7 @@
 
 <footer class="footer mt-5 py-3" style="background: linear-gradient(90deg,#2980b9,#6dd5fa); border-radius: 1.5rem 1.5rem 0 0;">
     <div class="container text-center text-white">
-        &copy; 2025 - dweb - <a class="text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2025 - Filmly
     </div>
 </footer>
 
